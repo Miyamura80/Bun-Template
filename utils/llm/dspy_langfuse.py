@@ -5,6 +5,7 @@ from dspy.adapters import Image as dspy_Image
 from dspy.signatures import Signature as dspy_Signature
 from dspy.utils.callback import BaseCallback
 from langfuse import Langfuse, LangfuseGeneration, get_client
+from langfuse.types import TraceContext
 from litellm.cost_calculator import completion_cost
 from loguru import logger as log
 from pydantic import BaseModel, Field, ValidationError
@@ -137,11 +138,14 @@ class LangFuseDSPYCallback(BaseCallback):  # noqa
         parent_observation_id = get_client().get_current_observation_id()
         span_obj: LangfuseGeneration | None = None
         if trace_id:
-            span_obj = self.langfuse.generation(
+            trace_context: TraceContext = {"trace_id": trace_id}
+            if parent_observation_id:
+                trace_context["parent_span_id"] = parent_observation_id
+
+            span_obj = self.langfuse.start_generation(
                 input=user_input,
                 name=model_name,
-                trace_id=trace_id,
-                parent_observation_id=parent_observation_id,
+                trace_context=trace_context,
                 metadata={
                     "model": model_name,
                     "temperature": temperature,
@@ -395,11 +399,14 @@ class LangFuseDSPYCallback(BaseCallback):  # noqa
         parent_observation_id = get_client().get_current_observation_id()
 
         if trace_id:
+            trace_context: TraceContext = {"trace_id": trace_id}
+            if parent_observation_id:
+                trace_context["parent_span_id"] = parent_observation_id
+
             # Create a span for the tool call
-            tool_span = self.langfuse.span(
+            tool_span = self.langfuse.start_span(
                 name=f"tool:{tool_name}",
-                trace_id=trace_id,
-                parent_observation_id=parent_observation_id,
+                trace_context=trace_context,
                 input=tool_args,
                 metadata={
                     "tool_name": tool_name,
