@@ -1,14 +1,14 @@
 import { useState } from 'react'
 
 interface Message {
-  id: number
+  id: string
   text: string
   sender: 'user' | 'bot'
 }
 
 function App() {
   const [messages, setMessages] = useState<Message[]>([
-    { id: 1, text: 'Hello! How can I help you today?', sender: 'bot' }
+    { id: '1', text: 'Hello! How can I help you today?', sender: 'bot' }
   ])
   const [inputValue, setInputValue] = useState('')
 
@@ -16,7 +16,7 @@ function App() {
     if (!inputValue.trim()) return
 
     const newMessage: Message = {
-      id: Date.now(),
+      id: crypto.randomUUID(),
       text: inputValue,
       sender: 'user'
     }
@@ -27,7 +27,7 @@ function App() {
     // Simulate bot response
     setTimeout(() => {
       const botResponse: Message = {
-        id: Date.now() + 1,
+        id: crypto.randomUUID(),
         text: 'This is a mocked response.',
         sender: 'bot'
       }
