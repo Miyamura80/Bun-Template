@@ -1,0 +1,67 @@
+[0;33m🔧Installing tools...[0m
+bun install v1.2.14 (6a363a38)
+Resolving dependencies
+Resolved, downloaded and extracted [1004]
+Saved lockfile
+
++ @eslint/js@9.39.3 (v10.0.1 available)
++ @types/node@20.19.33 (v25.3.0 available)
++ bun-types@1.3.9
++ dependency-cruiser@16.10.4 (v17.3.8 available)
++ eslint@9.39.3 (v10.0.2 available)
++ eslint-config-prettier@9.1.2 (v10.1.8 available)
++ globals@15.15.0 (v17.3.0 available)
++ knip@5.85.0
++ markdown-link-check@3.14.2
++ prettier@3.8.1
++ typescript@5.9.3
++ typescript-eslint@8.56.1
+
+245 packages installed [70.39s]
+bun install v1.2.14 (6a363a38)
+
+$ fumadocs-mdx
+[MDX] generated files in 29.814175000000034ms
+
++ @tailwindcss/postcss@4.1.18
++ @types/mdx@2.0.13
++ @types/node@25.0.9
++ @types/react@19.2.9
++ @types/react-dom@19.2.3
++ eslint@9.39.2
++ eslint-config-next@16.1.1
++ next-validate-link@1.6.4
++ postcss@8.5.6
++ tailwindcss@4.1.18
++ typescript@5.9.3
++ fumadocs-core@16.4.7
++ fumadocs-mdx@14.2.6
++ fumadocs-ui@16.4.7
++ lucide-react@0.562.0
++ next@16.1.1
++ react@19.2.3
++ react-dom@19.2.3
++ tailwind-merge@3.4.0
+
+587 packages installed [9.10s]
+[0;32m✅Tools installed.[0m
+[0;33m🔍Running eslint...[0m
+[0;32m✅Eslint completed.[0m
+[0;33m🔍Running Knip...[0m
+Configuration hints (1)
+src/index.ts    knip.ts  Remove redundant entry pattern
+[0;32m✅Knip completed.[0m
+[0;33m🔍Running Dependency Cruiser...[0m
+
+✔ no dependency violations found (1 modules, 0 dependencies cruised)
+
+[0;32m✅Dependency Cruiser completed.[0m
+[0;33m🔍Running TypeScript Compiler...[0m
+[0;32m✅Typecheck completed.[0m
+[0;33m🔍Linting docs links...[0m
+$ bun run scripts/lint.ts
+0 errored file, 0 errors
+[0;32m✅Docs linting completed.[0m
+[0;33m🔍Linting all markdown links with markdown-link-check...[0m
+[0;32m✅Link linting completed.[0m
+[0;32m✅CI checks completed.[0m

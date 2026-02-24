@@ -5,8 +5,6 @@ RED=\033[0;31m
 BLUE=\033[0;34m
 RESET=\033[0m
 
-PYTHON=uv run
-TEST=uv run pytest
 PROJECT_ROOT=.
 
 .DEFAULT_GOAL := help
@@ -32,260 +30,64 @@ help: ## Show this help message
 		}' $(MAKEFILE_LIST)
 
 ########################################################
-# Initialization
-########################################################
-
-### Initialization
-.PHONY: init banner logo
-init: ## Initialize project (usage: make init name=my-project description="my description")
-	@if [ -z "$(name)" ] || [ -z "$(description)" ]; then \
-		echo "$(RED)Error: Both 'name' and 'description' parameters are required$(RESET)"; \
-		echo "Usage: make init name=<project_name> description=<project_description>"; \
-		exit 1; \
-	fi
-	@echo "$(YELLOW)🚀 Initializing project $(name)...$(RESET)"
-	@sed -i.bak "s/name = \"python-template\"/name = \"$(name)\"/" pyproject.toml && rm pyproject.toml.bak
-	@sed -i.bak "s/description = \"Add your description here\"/description = \"$(description)\"/" pyproject.toml && rm pyproject.toml.bak
-	@sed -i.bak "s/# Python-Template/# $(name)/" README.md && rm README.md.bak
-	@sed -i.bak "s/<b>Opinionated Python project stack. 🔋 Batteries included. <\/b>/<b>$(description)<\/b>/" README.md && rm README.md.bak
-	@echo "$(GREEN)✅ Updated project name and description.$(RESET)"
-
-banner: check_uv ## Generate project banner image
-	@echo "$(YELLOW)🔍Generating banner...$(RESET)"
-	@uv run python -m init.generate_banner
-	@echo "$(GREEN)✅Banner generated.$(RESET)"
-
-logo: check_uv ## Generate logo and favicon for docs
-	@echo "$(YELLOW)🔍Generating logo and favicon...$(RESET)"
-	@uv run python -m init.generate_logo
-	@echo "$(GREEN)✅Logo and favicon generated in docs/public/$(RESET)"
-
-
-########################################################
-# Check dependencies
-########################################################
-
-check_uv:
-	@echo "$(YELLOW)🔍Checking uv version...$(RESET)"
-	@if ! command -v uv > /dev/null 2>&1; then \
-		echo "$(RED)uv is not installed. Please install uv before proceeding.$(RESET)"; \
-		exit 1; \
-	else \
-		uv --version; \
-	fi
-
-check_jq:
-	@echo "$(YELLOW)🔍Checking jq version...$(RESET)"
-	@if ! command -v jq > /dev/null 2>&1; then \
-		echo "$(RED)jq is not installed. Please install jq before proceeding.$(RESET)"; \
-		echo "$(RED)brew install jq$(RESET)"; \
-		exit 1; \
-	else \
-		jq --version; \
-	fi
-
-########################################################
-# Setup githooks for linting
-########################################################
-setup_githooks:
-	@echo "$(YELLOW)🔨Setting up githooks on post-commit...$(RESET)"
-	chmod +x .githooks/post-commit
-	git config core.hooksPath .githooks
-
-
-########################################################
-# Python dependency-related
-########################################################
-
-### Setup & Dependencies
-setup: check_uv ## Create venv and sync dependencies
-	@echo "$(YELLOW)🔎Looking for .venv...$(RESET)"
-	@if [ ! -d ".venv" ]; then \
-		echo "$(YELLOW)VS Code is not detected. Creating a new one...$(RESET)"; \
-		uv venv; \
-	else \
-		echo "$(GREEN)✅.venv is detected.$(RESET)"; \
-	fi
-	@echo "$(YELLOW)🔄Updating python dependencies...$(RESET)"
-	@uv sync
-
-view_python_venv_size:
-	@echo "$(YELLOW)🔍Checking python venv size...$(RESET)"
-	@PYTHON_VERSION=$$(cat .python-version | cut -d. -f1,2) && \
-	cd .venv/lib/python$$PYTHON_VERSION/site-packages && du -sh . && cd ../../../
-	@echo "$(GREEN)Python venv size check completed.$(RESET)"
-
-view_python_venv_size_by_libraries:
-	@echo "$(YELLOW)🔍Checking python venv size by libraries...$(RESET)"
-	@PYTHON_VERSION=$$(cat .python-version | cut -d. -f1,2) && \
-	cd .venv/lib/python$$PYTHON_VERSION/site-packages && du -sh * | sort -h && cd ../../../
-	@echo "$(GREEN)Python venv size by libraries check completed.$(RESET)"
-
-########################################################
 # Run Main Application
 ########################################################
-
-### Running
-all: setup setup_githooks ## Setup and run main application
-	@echo "$(GREEN)🏁Running main application...$(RESET)"
-	@$(PYTHON) main.py
-	@echo "$(GREEN)✅ Main application run completed.$(RESET)"
 
 docs: ## Run docs with bun
 	@echo "$(GREEN)📚Running docs...$(RESET)"
 	@cd docs && bun run dev
 	@echo "$(GREEN)✅ Docs run completed.$(RESET)"
 
-ralph: check_jq ## Run Ralph agent loop
-	@echo "$(RED)⚠️  WARNING: Ralph is an autonomous agent that can modify your codebase.$(RESET)"
-	@echo "$(RED)⚠️  It is HIGHLY RECOMMENDED to run Ralph in a sandboxed environment.$(RESET)"
-	@printf "$(YELLOW)Are you sure you want to continue? [y/N] $(RESET)" && read ans && [ "$$ans" = "y" ] || (echo "$(RED)Aborted.$(RESET)"; exit 1)
-	@echo "$(GREEN)🤖 Starting Ralph Agent...$(RESET)"
-	@chmod +x scripts/ralph.sh
-	@./scripts/ralph.sh $(ARGS)
-	@echo "$(GREEN)✅ Ralph Agent finished.$(RESET)"
-
-
-########################################################
-# Run Tests
-########################################################
-
-TEST_TARGETS = tests/
-
-### Testing
-test: check_uv ## Run all pytest tests
-	@echo "$(GREEN)🧪Running Target Tests...$(RESET)"
-	$(TEST) $(TEST_TARGETS)
-	@echo "$(GREEN)✅Target Tests Passed.$(RESET)"
-
-test_fast: check_uv ## Run fast tests (exclude slow/nondeterministic)
-	@echo "$(GREEN)🧪Running Fast Tests...$(RESET)"
-	$(TEST) -m "not slow and not nondeterministic" $(TEST_TARGETS)
-	@echo "$(GREEN)✅Fast Tests Passed.$(RESET)"
-
-test_slow: check_uv ## Run slow tests only
-	@echo "$(GREEN)🧪Running Slow Tests...$(RESET)"
-	@$(TEST) -m "slow" $(TEST_TARGETS); \
-	status=$$?; \
-	if [ $$status -eq 5 ]; then \
-		echo "$(YELLOW)⚠️ No slow tests collected.$(RESET)"; \
-		exit 0; \
-	fi; \
-	exit $$status
-
-test_nondeterministic: check_uv ## Run nondeterministic tests only
-	@echo "$(GREEN)🧪Running Nondeterministic Tests...$(RESET)"
-	@$(TEST) -m "nondeterministic" $(TEST_TARGETS); \
-	status=$$?; \
-	if [ $$status -eq 5 ]; then \
-		echo "$(YELLOW)⚠️ No nondeterministic tests collected.$(RESET)"; \
-		exit 0; \
-	fi; \
-	exit $$status
-
-test_flaky: check_uv ## Repeat fast tests to detect flaky tests
-	@echo "$(GREEN)🧪Running Flaky Test Detection...$(RESET)"
-	$(TEST) --count 2 -m "not slow and not nondeterministic" $(TEST_TARGETS)
-	@echo "$(GREEN)✅Flaky Test Detection Passed.$(RESET)"
-
-
 ########################################################
 # Cleaning
 ########################################################
 
-# Linter will ignore these directories
-IGNORE_LINT_DIRS = .venv venv
-LINE_LENGTH = 88
-FIND_PRUNE = $(foreach dir,$(IGNORE_LINT_DIRS),-path "./$(dir)" -o) -false
-
 ### Code Quality
-install_tools: check_uv ## Install linting/formatting tools
+install_tools: ## Install dependencies
 	@echo "$(YELLOW)🔧Installing tools...$(RESET)"
-	@uv tool install ruff --force
-	@uv tool install import-linter --force
-	@uv tool install ty --force
-	@uv tool install vulture --force
+	@bun install
+	@cd docs && bun install
 	@echo "$(GREEN)✅Tools installed.$(RESET)"
 
-fmt: install_tools check_jq ## Format code with ruff and jq
-	@echo "$(YELLOW)✨Formatting project with Ruff...$(RESET)"
-	@uv tool run ruff format
-	@echo "$(YELLOW)✨Formatting JSONs with jq...$(RESET)"
-	@count=0; \
-	find . \( $(FIND_PRUNE) \) -prune -o -type f -name '*.json' -print0 | \
-	while IFS= read -r -d '' file; do \
-		if jq . "$$file" > "$$file.tmp" 2>/dev/null && mv "$$file.tmp" "$$file"; then \
-			count=$$((count + 1)); \
-		else \
-			rm -f "$$file.tmp"; \
-		fi; \
-	done; \
-	echo "$(BLUE)$$count JSON file(s)$(RESET) formatted."; \
-	echo "$(GREEN)✅Formatting completed.$(RESET)"
+fmt: install_tools ## Format code with prettier
+	@echo "$(YELLOW)✨Formatting project with Prettier...$(RESET)"
+	@bun x prettier --write .
+	@echo "$(GREEN)✅Formatting completed.$(RESET)"
 
-ruff: install_tools ## Run ruff linter
-	@echo "$(YELLOW)🔍Running ruff...$(RESET)"
-	@uv tool run ruff check
-	@echo "$(GREEN)✅Ruff completed.$(RESET)"
+lint: install_tools ## Run eslint
+	@echo "$(YELLOW)🔍Running eslint...$(RESET)"
+	@bun x eslint .
+	@echo "$(GREEN)✅Eslint completed.$(RESET)"
 
-complexity: install_tools ## Check cyclomatic complexity
-	@echo "$(YELLOW)🔍Checking cyclomatic complexity...$(RESET)"
-	@uv tool run ruff check --select C901
-	@echo "$(GREEN)✅Complexity check completed.$(RESET)"
+dead_code: install_tools ## Find dead code with knip
+	@echo "$(YELLOW)🔍Running Knip...$(RESET)"
+	@bun x knip
+	@echo "$(GREEN)✅Knip completed.$(RESET)"
 
-tech_debt: install_tools ## Check TODO/FIXME markers
-	@echo "$(YELLOW)🔍Checking tech debt markers...$(RESET)"
-	@uv tool run ruff check --select FIX
-	@echo "$(GREEN)✅Tech debt check completed.$(RESET)"
+boundary_check: install_tools ## Enforce module boundaries with dependency-cruiser
+	@echo "$(YELLOW)🔍Running Dependency Cruiser...$(RESET)"
+	@bun x depcruise src
+	@echo "$(GREEN)✅Dependency Cruiser completed.$(RESET)"
 
-duplicate_code: check_uv ## Detect duplicate code blocks
-	@echo "$(YELLOW)🔍Checking duplicate code...$(RESET)"
-	@uv run pylint --disable=all --enable=R0801 src common utils
-	@echo "$(GREEN)✅Duplicate code check completed.$(RESET)"
-
-vulture: install_tools ## Find dead code with vulture
-	@echo "$(YELLOW)🔍Running Vulture...$(RESET)"
-	@uv tool run vulture .
-	@echo "$(GREEN)✅Vulture completed.$(RESET)"
-
-import_lint: install_tools ## Enforce module boundaries with import-linter
-	@echo "$(YELLOW)🔍Running Import Linter...$(RESET)"
-	@uv tool run --from import-linter lint-imports
-	@echo "$(GREEN)✅Import Linter completed.$(RESET)"
-
-ty: install_tools ## Run type checker
-	@echo "$(YELLOW)🔍Running Typer...$(RESET)"
-	@uv run ty check
-	@echo "$(GREEN)✅Typer completed.$(RESET)"
+typecheck: install_tools ## Run type checker
+	@echo "$(YELLOW)🔍Running TypeScript Compiler...$(RESET)"
+	@bun x tsc --noEmit
+	@echo "$(GREEN)✅Typecheck completed.$(RESET)"
 
 docs_lint: ## Lint docs links
 	@echo "$(YELLOW)🔍Linting docs links...$(RESET)"
 	@cd docs && bun run lint:links
 	@echo "$(GREEN)✅Docs linting completed.$(RESET)"
 
-lint_links: ## Lint all markdown links using pytest-check-links
-	@echo "$(YELLOW)🔍Linting all markdown links with pytest-check-links...$(RESET)"
-	@find . -name "*.md" -not -path "./.venv/*" -not -path "./node_modules/*" -not -path "./docs/node_modules/*" | xargs uv run pytest -p no:cov -o "addopts=" --check-links --check-links-ignore "http://localhost:.*"
+lint_links: ## Lint all markdown links using markdown-link-check
+	@echo "$(YELLOW)🔍Linting all markdown links with markdown-link-check...$(RESET)"
+	@find . -name "*.md" -not -path "./node_modules/*" -not -path "./docs/node_modules/*" -not -path "./.venv/*" -print0 | xargs -0 -n1 bun x markdown-link-check -q -c .markdown-link-check.json
 	@echo "$(GREEN)✅Link linting completed.$(RESET)"
 
-agents_validate: ## Validate AGENTS.md content
-	@echo "$(YELLOW)🔍Validating AGENTS.md...$(RESET)"
-	@$(PYTHON) scripts/validate_agents_md.py
-	@echo "$(GREEN)✅AGENTS.md validation completed.$(RESET)"
-
-check_deps: install_tools ## Check for unused dependencies
-	@echo "$(YELLOW)🔍Checking unused dependencies...$(RESET)"
-	@uv run deptry .
+unused_deps: install_tools ## Check for unused dependencies (alias for dead_code as knip does both)
+	@echo "$(YELLOW)🔍Checking unused dependencies with Knip...$(RESET)"
+	@bun x knip
 	@echo "$(GREEN)✅Dependency check completed.$(RESET)"
 
-ci: ruff vulture import_lint ty docs_lint lint_links check_deps ## Run all CI checks (ruff, vulture, import_lint, ty, docs_lint, lint_links)
+ci: lint dead_code boundary_check typecheck docs_lint lint_links ## Run all CI checks
 	@echo "$(GREEN)✅CI checks completed.$(RESET)"
-
-########################################################
-# Dependencies
-########################################################
-
-requirements:
-	@echo "$(YELLOW)🔍Checking requirements...$(RESET)"
-	@cp requirements-dev.lock requirements.txt
-	@echo "$(GREEN)✅Requirements checked.$(RESET)"
