@@ -42,7 +42,7 @@ Opinionated Python stack for fast development. The `saas` branch extends `main` 
 |---------|:------:|:------:|
 | UV + Pydantic config | ✅ | ✅ |
 | CI/Linters (Ruff, Vulture) | ✅ | ✅ |
-| Pre-commit hooks (prek) | ✅ | ✅ |
+| Git hooks (prek) | ✅ | ✅ |
 | LLM (DSPY + LangFuse Observability) | ✅ | ✅ |
 | FastAPI + Uvicorn | ❌ | ✅ |
 | SQLAlchemy + Alembic | ❌ | ✅ |

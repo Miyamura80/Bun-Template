@@ -88,9 +88,10 @@ check_jq:
 # Setup githooks for linting
 ########################################################
 setup_githooks:
-	@echo "$(YELLOW)🔨Setting up githooks on post-commit...$(RESET)"
-	chmod +x .githooks/post-commit
-	git config core.hooksPath .githooks
+	@echo "$(YELLOW)🔨Setting up githooks with prek...$(RESET)"
+	@git config --unset-all core.hooksPath || true
+	@uv tool install prek
+	@prek install
 
 
 ########################################################
