@@ -21,7 +21,7 @@ export function getPageImage(page: ReturnType<typeof source.getPage> & {}) {
 }
 
 export async function getLLMText(
-  page: ReturnType<typeof source.getPage> & {}
+  page: ReturnType<typeof source.getPage> & {},
 ): Promise<string> {
   const processed = page.data.processedMarkdown;
   if (!processed) return "";

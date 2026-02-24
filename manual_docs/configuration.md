@@ -117,6 +117,7 @@ logging:
 ## Production Configuration
 
 When `DEV_ENV=prod` is set:
+
 - `.prod.env` is loaded instead of `.env`
 - `production_config.yaml` values override `global_config.yaml`
 

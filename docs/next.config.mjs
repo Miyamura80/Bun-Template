@@ -1,4 +1,4 @@
-import { createMDX } from 'fumadocs-mdx/next';
+import { createMDX } from "fumadocs-mdx/next";
 
 const withMDX = createMDX();
 
@@ -8,12 +8,12 @@ const config = {
   async rewrites() {
     return [
       {
-        source: '/:lang/docs/:path*.mdx',
-        destination: '/llms.mdx/:lang/docs/:path*',
+        source: "/:lang/docs/:path*.mdx",
+        destination: "/llms.mdx/:lang/docs/:path*",
       },
       {
-        source: '/docs/:path*.mdx',
-        destination: '/llms.mdx/en/docs/:path*',
+        source: "/docs/:path*.mdx",
+        destination: "/llms.mdx/en/docs/:path*",
       },
     ];
   },

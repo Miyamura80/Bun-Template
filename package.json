@@ -1,0 +1,23 @@
+{
+  "name": "bun-template",
+  "version": "1.0.0",
+  "description": "Bun TypeScript Template",
+  "type": "module",
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "test": "bun test",
+    "lint": "bun x eslint .",
+    "format": "bun x prettier --write .",
+    "check-types": "bun x tsc --noEmit"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "latest",
+    "bun-types": "latest",
+    "eslint": "latest",
+    "globals": "^17.3.0",
+    "prettier": "latest",
+    "typescript": "latest",
+    "typescript-eslint": "^8.56.1"
+  }
+}

@@ -2,6 +2,7 @@
 name: code-quality
 description: Instructions for running code quality checks and maintaining standards in the Python-Template project.
 ---
+
 # Code Quality Skill
 
 This skill provides instructions for running code quality checks and maintaining standards in the Python-Template project.

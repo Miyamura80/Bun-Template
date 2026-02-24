@@ -3,12 +3,12 @@
 ## Getting Started
 
 1.  **Prerequisites**:
-    *   Python >= 3.12
-    *   `uv` (for dependency management)
+    - [Bun](https://bun.sh) (latest)
 
 2.  **Setup**:
+
     ```bash
-    make setup
+    make install_tools
     ```
 
 3.  **Run Tests**:
@@ -24,15 +24,15 @@
     ```bash
     make ci
     ```
-    This runs formatting, linting, type checking, and dead code detection.
+    This runs formatting, linting, type checking, and tests.
 
 ## Code Style
 
-*   Follow the existing conventions (snake_case for functions, CamelCase for classes).
-*   Use `ruff` for linting and formatting (handled by `make fmt` and `make ruff`).
-*   Add tests for new features.
+- Follow the existing conventions.
+- Use `prettier` and `eslint` for linting and formatting (handled by `make fmt` and `make lint`).
+- Add tests for new features.
 
 ## Pull Requests
 
-*   Keep PRs focused on a single change.
-*   Update documentation if necessary.
+- Keep PRs focused on a single change.
+- Update documentation if necessary.

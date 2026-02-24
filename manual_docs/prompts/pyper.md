@@ -1,6 +1,5 @@
 # Pyper Parallelization
 
-
 Let's suppose you have an original for loop that you want to parallelize.
 
 ```python
@@ -12,8 +11,8 @@ for data in data_list: # <-- NTOE: Assuming here no shared state, hence parallel
 
 ```
 
-
 The main syntax is as follows:
+
 ```python
 import asyncio
 import time
@@ -40,11 +39,9 @@ async for output in pipeline():
     results.append(output)
 ```
 
-Note: 
+Note:
+
 - For `async for` to work, all the functions in the pipeline must be `async` functions.
-
-
-
 
 ## Sharp Cases
 

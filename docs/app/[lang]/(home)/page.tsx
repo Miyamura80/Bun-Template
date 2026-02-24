@@ -34,10 +34,7 @@ export default async function HomePage({
       </h1>
       <p>
         {descriptions[lang] ?? descriptions.en}{" "}
-        <DynamicLink
-          href="/[lang]/docs"
-          className="font-medium underline"
-        >
+        <DynamicLink href="/[lang]/docs" className="font-medium underline">
           /docs
         </DynamicLink>{" "}
         {docsText[lang] ?? docsText.en}

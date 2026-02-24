@@ -1,6 +1,6 @@
-@import 'tailwindcss';
-@import 'fumadocs-ui/css/neutral.css';
-@import 'fumadocs-ui/css/preset.css';
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
 
 /* Brand Colors:
    - Baseline Black  #000000  (40%)
@@ -11,41 +11,41 @@
 
 @theme inline {
   /* Light mode - inverted for readability */
-  --color-fd-background: #F9F9F9;
+  --color-fd-background: #f9f9f9;
   --color-fd-foreground: #000000;
-  --color-fd-muted: #9BA4A6;
+  --color-fd-muted: #9ba4a6;
   --color-fd-muted-foreground: #5a6366;
   --color-fd-primary: #000000;
-  --color-fd-primary-foreground: #F9F9F9;
+  --color-fd-primary-foreground: #f9f9f9;
   --color-fd-secondary: #e8e8e8;
   --color-fd-secondary-foreground: #000000;
-  --color-fd-accent: #C3FFFD;
+  --color-fd-accent: #c3fffd;
   --color-fd-accent-foreground: #000000;
-  --color-fd-border: #9BA4A6;
-  --color-fd-ring: #C3FFFD;
-  --color-fd-card: #F9F9F9;
+  --color-fd-border: #9ba4a6;
+  --color-fd-ring: #c3fffd;
+  --color-fd-card: #f9f9f9;
   --color-fd-card-foreground: #000000;
-  --color-fd-popover: #F9F9F9;
+  --color-fd-popover: #f9f9f9;
   --color-fd-popover-foreground: #000000;
 }
 
 :root.dark {
   --color-fd-background: #000000;
-  --color-fd-foreground: #F9F9F9;
+  --color-fd-foreground: #f9f9f9;
   --color-fd-muted: #1a1b1f;
-  --color-fd-muted-foreground: #9BA4A6;
-  --color-fd-primary: #C3FFFD;
+  --color-fd-muted-foreground: #9ba4a6;
+  --color-fd-primary: #c3fffd;
   --color-fd-primary-foreground: #000000;
   --color-fd-secondary: #1a1b1f;
-  --color-fd-secondary-foreground: #F9F9F9;
+  --color-fd-secondary-foreground: #f9f9f9;
   --color-fd-accent: #0d3332;
-  --color-fd-accent-foreground: #C3FFFD;
+  --color-fd-accent-foreground: #c3fffd;
   --color-fd-border: #2a2b30;
-  --color-fd-ring: #C3FFFD;
+  --color-fd-ring: #c3fffd;
   --color-fd-card: #1a1b1f;
-  --color-fd-card-foreground: #F9F9F9;
+  --color-fd-card-foreground: #f9f9f9;
   --color-fd-popover: #1a1b1f;
-  --color-fd-popover-foreground: #F9F9F9;
+  --color-fd-popover-foreground: #f9f9f9;
 }
 
 /* Sidebar dark mode overrides */
@@ -53,9 +53,9 @@
   --color-fd-background: #1a1b1f;
   --color-fd-muted: #252629;
   --color-fd-secondary: #252629;
-  --color-fd-muted-foreground: #9BA4A6;
-  --color-fd-foreground: #F9F9F9;
-  --color-fd-secondary-foreground: #F9F9F9;
+  --color-fd-muted-foreground: #9ba4a6;
+  --color-fd-foreground: #f9f9f9;
+  --color-fd-secondary-foreground: #f9f9f9;
   --color-fd-border: #2a2b30;
   background-color: #1a1b1f !important;
 }
@@ -67,16 +67,16 @@
 
 /* Sidebar link text in dark mode */
 .dark #nd-sidebar a {
-  color: #F9F9F9;
+  color: #f9f9f9;
 }
 
 .dark #nd-sidebar a:hover {
-  color: #C3FFFD;
+  color: #c3fffd;
 }
 
 /* Active sidebar item */
 .dark #nd-sidebar a[data-active="true"] {
-  color: #C3FFFD;
+  color: #c3fffd;
   font-weight: 600;
 }
 
@@ -84,31 +84,31 @@
 .dark .bg-fd-card {
   background-color: #1a1b1f !important;
   border-color: #2a2b30 !important;
-  color: #F9F9F9;
+  color: #f9f9f9;
 }
 
 .dark .bg-fd-card button {
   background-color: #1a1b1f;
-  color: #F9F9F9;
+  color: #f9f9f9;
 }
 
 .dark .text-fd-muted-foreground {
-  color: #9BA4A6 !important;
+  color: #9ba4a6 !important;
 }
 
 .dark .bg-fd-card a {
-  color: #9BA4A6;
+  color: #9ba4a6;
 }
 
 .dark .bg-fd-card a:hover {
-  color: #C3FFFD;
+  color: #c3fffd;
 }
 
 /* Secondary buttons (Copy Markdown, Open) dark mode styling */
 .dark .bg-fd-secondary {
   background-color: #1a1b1f !important;
   border-color: #2a2b30 !important;
-  color: #F9F9F9 !important;
+  color: #f9f9f9 !important;
 }
 
 .dark .bg-fd-secondary:hover {
@@ -119,7 +119,7 @@
 .dark [data-card] {
   background-color: #1a1b1f;
   border-color: #2a2b30;
-  color: #F9F9F9;
+  color: #f9f9f9;
 }
 
 .dark [data-card]:hover {
@@ -129,7 +129,7 @@
 .dark [data-card] a,
 .dark [data-card] span,
 .dark [data-card] p {
-  color: #F9F9F9;
+  color: #f9f9f9;
 }
 
 /* Right-side Table of Contents dark mode styling */
@@ -139,15 +139,15 @@
 }
 
 .dark #nd-toc a {
-  color: #9BA4A6;
+  color: #9ba4a6;
 }
 
 .dark #nd-toc a:hover {
-  color: #C3FFFD;
+  color: #c3fffd;
 }
 
 .dark #nd-toc a[data-active="true"] {
-  color: #C3FFFD;
+  color: #c3fffd;
 }
 
 /* TOC popover (mobile) dark mode styling */
@@ -161,9 +161,9 @@
 }
 
 .dark [data-toc-popover-content] a {
-  color: #9BA4A6;
+  color: #9ba4a6;
 }
 
 .dark [data-toc-popover-content] a:hover {
-  color: #C3FFFD;
+  color: #c3fffd;
 }
