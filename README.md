@@ -61,6 +61,7 @@ Opinionated Python stack for fast development. The `saas` branch extends `main` 
 - `make banner` - create a new banner that makes the README nice 😊
 - `make test` - runs all tests in `tests/`
 - `make ci` - runs all CI checks (ruff, vulture, ty, etc.)
+- `make setup_githooks` - install git hooks with prek
 
 
 

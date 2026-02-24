@@ -88,9 +88,15 @@ check_jq:
 # Setup githooks for linting
 ########################################################
 setup_githooks:
-	@echo "$(YELLOW)🔨Setting up githooks on post-commit...$(RESET)"
-	chmod +x .githooks/post-commit
-	git config core.hooksPath .githooks
+	@echo "$(YELLOW)🔨Setting up git hooks with prek...$(RESET)"
+	@git config --unset core.hooksPath || true
+	@uv tool run prek install
+	@echo "$(GREEN)✅Git hooks installed.$(RESET)"
+
+prek: ## Run prek on all files
+	@echo "$(YELLOW)🔍Running prek...$(RESET)"
+	@uv tool run prek run --all-files
+	@echo "$(GREEN)✅Prek completed.$(RESET)"
 
 
 ########################################################
@@ -205,6 +211,7 @@ install_tools: check_uv ## Install linting/formatting tools
 	@uv tool install import-linter --force
 	@uv tool install ty --force
 	@uv tool install vulture --force
+	@uv tool install prek --force
 	@echo "$(GREEN)✅Tools installed.$(RESET)"
 
 fmt: install_tools check_jq ## Format code with ruff and jq

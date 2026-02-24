@@ -26,6 +26,12 @@
     ```
     This runs formatting, linting, type checking, and dead code detection.
 
+4.  Setup git hooks (optional but recommended):
+    ```bash
+    make setup_githooks
+    ```
+    This sets up git hooks using `prek`.
+
 ## Code Style
 
 *   Follow the existing conventions (snake_case for functions, CamelCase for classes).
