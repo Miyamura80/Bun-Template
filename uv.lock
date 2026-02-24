@@ -94,6 +94,15 @@ wheels = [
 ]
 
 [[package]]
+name = "annotated-doc"
+version = "0.0.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/57/ba/046ceea27344560984e26a590f90bc7f4a75b06701f653222458922b558c/annotated_doc-0.0.4.tar.gz", hash = "sha256:fbcda96e87e9c92ad167c2e53839e57503ecfda18804ea28102353485033faa4", size = 7288, upload-time = "2025-11-10T22:07:42.062Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1e/d3/26bf1008eb3d2daa8ef4cacc7f3bfdc11818d111f7e2d0201bc6e3b49d45/annotated_doc-0.0.4-py3-none-any.whl", hash = "sha256:571ac1dc6991c450b25a9c2d84a3705e2ae7a53467b5d111c24fa8baabbed320", size = 5303, upload-time = "2025-11-10T22:07:40.673Z" },
+]
+
+[[package]]
 name = "annotated-types"
 version = "0.7.0"
 source = { registry = "https://pypi.org/simple" }
@@ -609,6 +618,22 @@ wheels = [
 ]
 
 [[package]]
+name = "fastapi"
+version = "0.132.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "annotated-doc" },
+    { name = "pydantic" },
+    { name = "starlette" },
+    { name = "typing-extensions" },
+    { name = "typing-inspection" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a0/55/f1b4d4e478a0a1b4b1113d0f610a1b08e539b69900f97fdc97155d62fdee/fastapi-0.132.0.tar.gz", hash = "sha256:ef687847936d8a57ea6ea04cf9a85fe5f2c6ba64e22bfa721467094b69d48d92", size = 372422, upload-time = "2026-02-23T17:56:22.218Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a8/de/6171c3363bbc5e01686e200e0880647c9270daa476d91030435cf14d32f5/fastapi-0.132.0-py3-none-any.whl", hash = "sha256:3c487d5afce196fa8ea509ae1531e96ccd5cdd2fd6eae78b73e2c20fba706689", size = 104652, upload-time = "2026-02-23T17:56:20.836Z" },
+]
+
+[[package]]
 name = "fastjsonschema"
 version = "2.21.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1006,17 +1031,19 @@ wheels = [
 
 [[package]]
 name = "import-linter"
-version = "2.9"
+version = "2.10"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
+    { name = "fastapi" },
     { name = "grimp" },
     { name = "rich" },
     { name = "typing-extensions" },
+    { name = "uvicorn" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/03/ea/9d3ba8e6851d22a073d21ff143a6b23f844dc97f46b41c0dccd26e26d6d3/import_linter-2.9.tar.gz", hash = "sha256:0d7da2a9bb0a534171a592795bd46c8cca86bd6dc6e6e665fa95ba4ed5024215", size = 288196, upload-time = "2025-12-11T11:55:06.087Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/10/c4/a83cc1ea9ed0171725c0e2edc11fd929994d4f026028657e8b30d62bca37/import_linter-2.10.tar.gz", hash = "sha256:c6a5057d2dbd32e1854c4d6b60e90dfad459b7ab5356230486d8521f25872963", size = 1149263, upload-time = "2026-02-06T17:57:24.779Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/62/3d/657a586f9324ad24538cd797d5c471286e217987e1d0f265575cebe594a9/import_linter-2.9-py3-none-any.whl", hash = "sha256:06403ede04c975cda2ea9050498c16b2021c0261b5cedf47c6c5d8725894b1a2", size = 44899, upload-time = "2025-12-11T11:55:04.87Z" },
+    { url = "https://files.pythonhosted.org/packages/1c/e5/4b7b9435eac78ecfd537fa1004a0bcf0f4eac17d3a893f64d38a7bacb51b/import_linter-2.10-py3-none-any.whl", hash = "sha256:cc2ddd7ec0145cbf83f3b25391d2a5dbbf138382aaf80708612497fa6ebc8f60", size = 637081, upload-time = "2026-02-06T17:57:23.386Z" },
 ]
 
 [[package]]
@@ -2712,6 +2739,19 @@ wheels = [
 ]
 
 [[package]]
+name = "starlette"
+version = "0.52.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "anyio" },
+    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c4/68/79977123bb7be889ad680d79a40f339082c1978b5cfcf62c2d8d196873ac/starlette-0.52.1.tar.gz", hash = "sha256:834edd1b0a23167694292e94f597773bc3f89f362be6effee198165a35d62933", size = 2653702, upload-time = "2026-01-18T13:34:11.062Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/81/0d/13d1d239a25cbfb19e740db83143e95c772a1fe10202dda4b76792b114dd/starlette-0.52.1-py3-none-any.whl", hash = "sha256:0029d43eb3d273bc4f83a08720b4912ea4b071087a3b48db01b7c839f7954d74", size = 74272, upload-time = "2026-01-18T13:34:09.188Z" },
+]
+
+[[package]]
 name = "tenacity"
 version = "9.1.4"
 source = { registry = "https://pypi.org/simple" }
@@ -2933,6 +2973,19 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/15/22/9ee70a2574a4f4599c47dd506532914ce044817c7752a79b6a51286319bc/urllib3-2.5.0.tar.gz", hash = "sha256:3fc47733c7e419d4bc3f6b3dc2b4f890bb743906a30d56ba4a5bfa4bbff92760", size = 393185, upload-time = "2025-06-18T14:07:41.644Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a7/c2/fe1e52489ae3122415c51f387e221dd0773709bad6c6cdaa599e8a2c5185/urllib3-2.5.0-py3-none-any.whl", hash = "sha256:e6b01673c0fa6a13e374b50871808eb3bf7046c4b125b216f6bf1cc604cff0dc", size = 129795, upload-time = "2025-06-18T14:07:40.39Z" },
+]
+
+[[package]]
+name = "uvicorn"
+version = "0.41.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "click" },
+    { name = "h11" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/32/ce/eeb58ae4ac36fe09e3842eb02e0eb676bf2c53ae062b98f1b2531673efdd/uvicorn-0.41.0.tar.gz", hash = "sha256:09d11cf7008da33113824ee5a1c6422d89fbc2ff476540d69a34c87fab8b571a", size = 82633, upload-time = "2026-02-16T23:07:24.1Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/83/e4/d04a086285c20886c0daad0e026f250869201013d18f81d9ff5eada73a88/uvicorn-0.41.0-py3-none-any.whl", hash = "sha256:29e35b1d2c36a04b9e180d4007ede3bcb32a85fbdfd6c6aeb3f26839de088187", size = 68783, upload-time = "2026-02-16T23:07:22.357Z" },
 ]
 
 [[package]]
