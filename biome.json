@@ -51,7 +51,7 @@
             "init",
             "manual_docs",
             "media",
-            "scripts",
+            "utils"
             "utils"
         ]
     }
