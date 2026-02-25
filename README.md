@@ -12,7 +12,8 @@
   <a href="#key-features">Key Features</a> •
   <a href="#quick-start">Quick Start</a> •
   <a href="#configuration">Configuration</a> •
-  <a href="#credits">Credits</a>
+  <a href="#credits">Credits</a> •
+  <a href="#about-the-core-contributors">About the Core Contributors</a>
 </p>
 
 <p align="center">
