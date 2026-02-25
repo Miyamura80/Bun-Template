@@ -102,7 +102,7 @@ setup: check_bun ## Install dependencies
 setup_githooks: ## Set up git hooks with prek
 	@echo "$(YELLOW)🔨 Setting up githooks with prek...$(RESET)"
 	@git config --unset-all core.hooksPath || true
-	@uv tool install prek
+	@bun install -g @j178/prek
 	@prek install
 
 view_python_venv_size:
