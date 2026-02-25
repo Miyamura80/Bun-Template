@@ -1,9 +1,9 @@
 ---
 title: Quick Start
-description: Get started with this Python template
+description: Get started with this Bun/TypeScript template
 ---
 
-Welcome to the docs! Follow these steps to get started with this Python template.
+Welcome to the docs! Follow these steps to get started with this Bun/TypeScript template.
 
 ## Quick Start
 
@@ -14,13 +14,13 @@ import { Step, Steps } from 'fumadocs-ui/components/steps';
 
 ### Setup Environment
 
-Create and activate your virtual environment using `uv`:
+Install all dependencies using Bun:
 
 ```bash
 make setup
 ```
 
-This will create a `.venv` directory and sync all dependencies from `pyproject.toml`.
+This will run `bun install` and set up your project.
 
 </Step>
 
@@ -34,7 +34,7 @@ Copy the example environment file and add your API keys:
 cp .env.example .env
 ```
 
-Edit `common/global_config.yaml` to customize configuration values for your project.
+Edit `src/config/global-config.yaml` to customize configuration values for your project.
 
 </Step>
 
@@ -48,10 +48,10 @@ Execute the main application:
 make all
 ```
 
-Or run specific Python files directly:
+Or run directly:
 
 ```bash
-uv run python src/main.py
+bun run src/index.ts
 ```
 
 </Step>
