@@ -50,6 +50,19 @@ bun run src/index.ts # Run TypeScript files
 - kebab-case for file names
 - 4-space indentation, double quotes (enforced by Biome)
 
+## Configuration Pattern
+
+Use environment variables via `process.env` for secrets and config. For structured config, import JSON or use a typed config object:
+
+```typescript
+// .env (git-ignored)
+DATABASE_URL=...
+API_KEY=...
+
+// Access in code
+const apiKey = process.env.API_KEY;
+```
+
 ## Testing Pattern
 
 ```typescript
