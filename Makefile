@@ -210,22 +210,6 @@ fmt: check_bun ## Format code with Biome
 	@bunx biome check --write
 	@echo "$(GREEN)✅ Formatting completed.$(RESET)"
 
-fmt_python: install_tools check_jq ## Format Python code with ruff and jq
-	@echo "$(YELLOW)✨Formatting project with Ruff...$(RESET)"
-	@uv tool run ruff format
-	@echo "$(YELLOW)✨Formatting JSONs with jq...$(RESET)"
-	@count=0; \
-	find . \( $(FIND_PRUNE) \) -prune -o -type f -name '*.json' -print0 | \
-	while IFS= read -r -d '' file; do \
-		if jq . "$$file" > "$$file.tmp" 2>/dev/null && mv "$$file.tmp" "$$file"; then \
-			count=$$((count + 1)); \
-		else \
-			rm -f "$$file.tmp"; \
-		fi; \
-	done; \
-	echo "$(BLUE)$$count JSON file(s)$(RESET) formatted."; \
-	echo "$(GREEN)✅Formatting completed.$(RESET)"
-
 lint: check_bun ## Run Biome linter
 	@echo "$(YELLOW)🔍 Running Biome linter...$(RESET)"
 	@bunx biome check
