@@ -37,7 +37,7 @@ help: ## Show this help message
 
 ### Initialization
 .PHONY: init banner logo
-init: ## Initialize project (usage: make init name=my-project description="my description")
+init: check_jq ## Initialize project (usage: make init name=my-project description="my description")
 	@if [ -z "$(name)" ] || [ -z "$(description)" ]; then \
 		echo "$(RED)Error: Both 'name' and 'description' parameters are required$(RESET)"; \
 		echo "Usage: make init name=<project_name> description=<project_description>"; \
