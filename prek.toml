@@ -12,4 +12,5 @@ hooks = [
   { id = "make-fmt", name = "Run formatter (make fmt)", entry = "make fmt", language = "system", pass_filenames = false, always_run = true },
   { id = "ai-writing-check", name = "AI writing check", entry = "bun run scripts/check_ai_writing.ts", language = "system", pass_filenames = false, always_run = true },
   { id = "agents-validate", name = "Validate AGENTS.md", entry = "bun run scripts/validate-agents-md.ts", language = "system", pass_filenames = false, always_run = true },
+  { id = "duplicate-code", name = "Duplicate code check", entry = "make duplicate_code", language = "system", pass_filenames = false, always_run = true },
 ]
