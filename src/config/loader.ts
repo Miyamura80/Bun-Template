@@ -2,12 +2,6 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
 import { type Config, ConfigSchema } from "./schemas";
-
-// Only env vars starting with these prefixes (before __) are treated as config overrides.
-// This prevents system env vars like __CF_USER_TEXT_ENCODING from polluting the config.
-const CONFIG_ENV_PREFIXES = new Set(
-    Object.keys(ConfigSchema.shape).map((k) => k.toLowerCase()),
-);
 import {
     coerceValue,
     envKeyToCamel,
@@ -15,6 +9,12 @@ import {
     recursiveUpdate,
     snakeToCamel,
 } from "./utils";
+
+// Only env vars starting with these prefixes (before __) are treated as config overrides.
+// This prevents system env vars like __CF_USER_TEXT_ENCODING from polluting the config.
+const CONFIG_ENV_PREFIXES = new Set(
+    Object.keys(ConfigSchema.shape).map((k) => k.toLowerCase()),
+);
 
 const ROOT_DIR = resolve(import.meta.dir, "../..");
 const CONFIG_DIR = import.meta.dir;

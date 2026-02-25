@@ -26,12 +26,15 @@ export function recursiveKeyTransform(
     return obj;
 }
 
+const UNSAFE_KEYS = new Set(["__proto__", "constructor", "prototype"]);
+
 /** Deep merge override into base (mutates base). */
 export function recursiveUpdate(
     base: Record<string, unknown>,
     override: Record<string, unknown>,
 ): Record<string, unknown> {
     for (const [key, value] of Object.entries(override)) {
+        if (UNSAFE_KEYS.has(key)) continue;
         if (
             typeof value === "object" &&
             value !== null &&
