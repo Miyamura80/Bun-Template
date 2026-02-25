@@ -2,6 +2,12 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
 import { type Config, ConfigSchema } from "./schemas";
+
+// Only env vars starting with these prefixes (before __) are treated as config overrides.
+// This prevents system env vars like __CF_USER_TEXT_ENCODING from polluting the config.
+const CONFIG_ENV_PREFIXES = new Set(
+    Object.keys(ConfigSchema.shape).map((k) => k.toLowerCase()),
+);
 import {
     coerceValue,
     envKeyToCamel,
@@ -72,6 +78,8 @@ function applyEnvOverrides(config: Record<string, unknown>): Record<string, unkn
         if (!key.includes("__") || rawValue === undefined) continue;
 
         const parts = key.split("__").map(envKeyToCamel);
+        // Skip env vars whose top-level key isn't a known config field
+        if (!CONFIG_ENV_PREFIXES.has(parts[0].toLowerCase())) continue;
         let target = config;
         for (let i = 0; i < parts.length - 1; i++) {
             const part = parts[i];
