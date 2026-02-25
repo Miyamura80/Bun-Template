@@ -1,7 +1,7 @@
 {
     "name": "bun-template",
     "version": "0.1.0",
-    "description": "Add your description here",
+    "description": "🥟 Agent-ergonomic opinionated Bun template",
     "type": "module",
     "scripts": {
         "dev": "bun run --watch src/index.ts",

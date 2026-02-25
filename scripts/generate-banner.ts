@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { createGeminiClient, generateImage, generateText } from "./lib/gemini-client";
 
@@ -6,8 +6,13 @@ const REPO_ROOT = join(import.meta.dir, "..");
 const OUTPUT_DIR = join(REPO_ROOT, "media");
 const OUTPUT_PATH = join(OUTPUT_DIR, "banner.png");
 
+function readProjectName(): string {
+    const pkg = JSON.parse(readFileSync(join(REPO_ROOT, "package.json"), "utf-8"));
+    return pkg.name;
+}
+
 const TEXT_MODEL = "gemini-2.5-flash";
-const IMAGE_MODEL = "gemini-2.0-flash-preview-image-generation";
+const IMAGE_MODEL = "gemini-2.5-flash-image";
 
 const STYLE_PROMPT = `Style the image in a Japanese minimalist style, inspired by \
 traditional sumi-e ink wash painting. The artwork should feature clean, elegant \
@@ -20,7 +25,7 @@ evoking a sense of tranquility and Zen. Avoid unnecessary details, focusing \
 instead on evoking emotion through subtle contrasts and the beauty of imperfection.`;
 
 async function main(): Promise<void> {
-    const title = process.argv[2] ?? "Bun-Template";
+    const title = process.argv[2] ?? readProjectName();
     const theme = process.argv[3] ?? "";
 
     console.log(`Generating banner for "${title}"...`);

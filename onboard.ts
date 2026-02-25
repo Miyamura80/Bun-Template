@@ -30,6 +30,13 @@ function validateKebabCase(value: string): string | undefined {
     return undefined;
 }
 
+function toDisplayName(kebab: string): string {
+    return kebab
+        .split("-")
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join("-");
+}
+
 const SECRET_PATTERNS = ["SECRET", "_KEY", "TOKEN", "PASSWORD", "PASS", "CREDENTIAL"];
 
 function isSecretKey(key: string): boolean {
@@ -195,11 +202,16 @@ function exitIfCancelled<T>(value: T | symbol): T {
 // Subcommands
 // ──────────────────────────────────────────────
 
+const DEFAULT_NAME = "bun-template";
+const DEFAULT_DISPLAY_NAME = "Bun-Template";
+const DEFAULT_DESCRIPTION = "\u{1F95F} Agent-ergonomic opinionated Bun template";
+const DEFAULT_GITHUB_REPO = "Miyamura80/Bun-Template";
+
 async function cmdRename(): Promise<boolean> {
     p.log.step("Rename project");
 
     const pkg = readPackageJson();
-    if (pkg.name !== "bun-template") {
+    if (pkg.name !== DEFAULT_NAME) {
         p.log.info(`Project already renamed to "${pkg.name}" -skipping.`);
         return true;
     }
@@ -219,23 +231,40 @@ async function cmdRename(): Promise<boolean> {
         }),
     );
 
+    const githubRepo = exitIfCancelled(
+        await p.text({
+            message: "GitHub owner/repo (for badge URLs, leave empty to skip):",
+            placeholder: "your-username/your-repo",
+        }),
+    );
+
     // Update package.json
     pkg.name = name;
     pkg.description = description || pkg.description;
     writePackageJson(pkg);
     p.log.success("Updated package.json");
 
-    // Update README.md title
-    const readmePath = join(REPO_ROOT, "README.md");
-    if (existsSync(readmePath)) {
-        let readme = readFileSync(readmePath, "utf-8");
-        readme = readme.replace(/^# Bun-Template/m, `# ${name}`);
-        readme = readme.replace(
-            /Opinionated Bun\/TypeScript stack for fast development\./,
-            description || "Opinionated Bun/TypeScript stack for fast development.",
-        );
-        writeFileSync(readmePath, readme);
-        p.log.success("Updated README.md");
+    // Replace template name and description across project files
+    const filesToUpdate = ["README.md", "src/index.ts", "scripts/README.md"];
+
+    for (const relPath of filesToUpdate) {
+        const filePath = join(REPO_ROOT, relPath);
+        if (!existsSync(filePath)) continue;
+        let content = readFileSync(filePath, "utf-8");
+        const original = content;
+        // Replace GitHub owner/repo in URLs (must run before name replacement)
+        if (githubRepo) {
+            content = content.replaceAll(DEFAULT_GITHUB_REPO, githubRepo);
+        }
+        content = content.replaceAll(DEFAULT_NAME, name);
+        content = content.replaceAll(DEFAULT_DISPLAY_NAME, toDisplayName(name));
+        if (description) {
+            content = content.replaceAll(DEFAULT_DESCRIPTION, description);
+        }
+        if (content !== original) {
+            writeFileSync(filePath, content);
+            p.log.success(`Updated ${relPath}`);
+        }
     }
 
     return true;
@@ -381,7 +410,8 @@ async function cmdMedia(): Promise<boolean> {
     }
 
     const pkg = readPackageJson();
-    const title = pkg.name !== "bun-template" ? pkg.name : "Bun-Template";
+    const title =
+        pkg.name !== DEFAULT_NAME ? toDisplayName(pkg.name) : DEFAULT_DISPLAY_NAME;
 
     const theme = exitIfCancelled(
         await p.text({
@@ -420,7 +450,8 @@ interface Step {
 }
 
 async function orchestrator(): Promise<void> {
-    p.intro("Welcome to Bun-Template onboarding");
+    const pkg = readPackageJson();
+    p.intro(`Welcome to ${pkg.name} onboarding`);
 
     const steps: Step[] = [
         { name: "Rename project", fn: cmdRename },
