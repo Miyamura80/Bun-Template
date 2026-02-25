@@ -30,21 +30,13 @@ help: ## Show this help message
 		}' $(MAKEFILE_LIST)
 
 ########################################################
-# Initialization
+# Onboarding & Setup
 ########################################################
 
-### Initialization
-.PHONY: init
-init: check_jq ## Initialize project (usage: make init name=my-project description="my description")
-	@if [ -z "$(name)" ] || [ -z "$(description)" ]; then \
-		echo "$(RED)Error: Both 'name' and 'description' parameters are required$(RESET)"; \
-		echo "Usage: make init name=<project_name> description=<project_description>"; \
-		exit 1; \
-	fi
-	@echo "$(YELLOW)🚀 Initializing project $(name)...$(RESET)"
-	@jq '.name = "$(name)" | .description = "$(description)"' package.json > package.json.tmp && mv package.json.tmp package.json
-	@sed -i.bak "s/# Bun-Template/# $(name)/" README.md && rm README.md.bak
-	@echo "$(GREEN)✅ Updated project name and description.$(RESET)"
+### Onboarding & Setup
+.PHONY: onboard
+onboard: check_bun ## Interactive onboarding CLI (rename, deps, env, hooks, media)
+	@bun run onboard.ts
 
 ########################################################
 # Asset Generation
@@ -72,16 +64,6 @@ check_bun:
 		exit 1; \
 	else \
 		bun --version; \
-	fi
-
-check_jq:
-	@echo "$(YELLOW)🔍Checking jq version...$(RESET)"
-	@if ! command -v jq > /dev/null 2>&1; then \
-		echo "$(RED)jq is not installed. Please install jq before proceeding.$(RESET)"; \
-		echo "$(RED)brew install jq$(RESET)"; \
-		exit 1; \
-	else \
-		jq --version; \
 	fi
 
 ########################################################
@@ -115,7 +97,8 @@ view_deps_size_by_package: check_bun ## Show node_modules size by package
 ########################################################
 
 ### Running
-all: setup setup_githooks ## Setup and run main application
+all: check_bun ## Install deps and run main application
+	@bun install
 	@echo "$(GREEN)🏁 Running main application...$(RESET)"
 	@bun run start
 	@echo "$(GREEN)✅ Main application run completed.$(RESET)"

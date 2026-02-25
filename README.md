@@ -46,8 +46,8 @@
 ## Quick Start
 
 ```bash
-# Initialize project
-make init name=my-project description="My project description"
+# Interactive onboarding
+make onboard
 
 # Install dependencies and run
 make all

@@ -21,7 +21,7 @@ instead on evoking emotion through subtle contrasts and the beauty of imperfecti
 
 async function main(): Promise<void> {
     const title = process.argv[2] ?? "Bun-Template";
-    const suggestion = process.argv[3] ?? "";
+    const theme = process.argv[3] ?? "";
 
     console.log(`Generating banner for "${title}"...`);
     const client = createGeminiClient();
@@ -31,7 +31,7 @@ async function main(): Promise<void> {
     const descriptionPrompt = `Generate a creative description of a person, animal, \
 or object holding a banner. Go for a Japanese style, creative and fun, but make \
 sense. The banner reads: "${title}". \
-${suggestion ? `Suggestion: ${suggestion}. ` : ""}\
+${theme ? `Suggestion: ${theme}. ` : ""}\
 Do not mention any colors. Keep the description to 2-3 sentences.`;
 
     const description = await generateText(client, TEXT_MODEL, descriptionPrompt);

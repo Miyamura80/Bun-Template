@@ -9,10 +9,10 @@ Super-opinionated Bun/TypeScript stack for fast development. Uses `bun` as runti
 ## Common Commands
 
 ```bash
-# Setup & Run
-make init name=... description=... # Initialize project name and description
+# Onboarding & Setup
+make onboard        # Interactive onboarding CLI (rename, deps, env, hooks, media)
 make setup          # Install dependencies (bun install)
-make all            # Setup and run main application
+make all            # Install deps and run main application
 make dev            # Run in watch mode
 
 # Testing
