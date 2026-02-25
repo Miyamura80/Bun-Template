@@ -117,7 +117,7 @@ function buildEnvOptions(
             options.push({
                 value: entry.key,
                 label: entry.key,
-                hint: configured ? `[${group} — configured]` : `[${group}]`,
+                hint: configured ? `[${group} -configured]` : `[${group}]`,
             });
         }
     }
@@ -200,7 +200,7 @@ async function cmdRename(): Promise<boolean> {
 
     const pkg = readPackageJson();
     if (pkg.name !== "bun-template") {
-        p.log.info(`Project already renamed to "${pkg.name}" — skipping.`);
+        p.log.info(`Project already renamed to "${pkg.name}" -skipping.`);
         return true;
     }
 
@@ -259,7 +259,7 @@ async function cmdEnv(): Promise<boolean> {
 
     const entries = parseEnvExample();
     if (entries.length === 0) {
-        p.log.info("No .env.example found — skipping.");
+        p.log.info("No .env.example found -skipping.");
         return true;
     }
 
@@ -275,7 +275,7 @@ async function cmdEnv(): Promise<boolean> {
     );
 
     if (selected.length === 0) {
-        p.log.info("No env vars selected — keeping existing .env.");
+        p.log.info("No env vars selected -keeping existing .env.");
         return true;
     }
 
@@ -295,7 +295,7 @@ async function cmdHooks(): Promise<boolean> {
 
     const prekPath = join(REPO_ROOT, "prek.toml");
     if (!existsSync(prekPath)) {
-        p.log.info("No prek.toml found — skipping.");
+        p.log.info("No prek.toml found -skipping.");
         return true;
     }
 
@@ -374,7 +374,7 @@ async function cmdMedia(): Promise<boolean> {
 
     if (!hasGeminiKey()) {
         p.log.warn(
-            "GEMINI_API_KEY not set — media generation requires a Gemini API key.",
+            "GEMINI_API_KEY not set -media generation requires a Gemini API key.",
         );
         p.log.info("Set it in .env or as an environment variable, then re-run.");
         return false;
@@ -476,7 +476,7 @@ async function orchestrator(): Promise<void> {
         .map((r) => {
             const icon = r.skipped ? "○" : r.ok ? "●" : "✗";
             const status = r.skipped ? "skipped" : r.ok ? "done" : "failed";
-            return `  ${icon} ${r.name} — ${status}`;
+            return `  ${icon} ${r.name} -${status}`;
         })
         .join("\n");
 
