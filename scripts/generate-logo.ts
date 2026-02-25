@@ -17,7 +17,7 @@ const IMAGE_MODEL = "gemini-2.0-flash-preview-image-generation";
 
 async function main(): Promise<void> {
     const projectName = process.argv[2] ?? "Bun-Template";
-    const suggestion =
+    const theme =
         process.argv[3] ?? "incorporate modern tech aesthetics, simple and clean";
 
     console.log(`Generating logo suite for "${projectName}"...`);
@@ -30,7 +30,7 @@ async function main(): Promise<void> {
     const descriptionPrompt = `Generate a creative description for a horizontal \
 wordmark logo with text. The wordmark should be clean, modern, and professional. \
 Project name: "${projectName}". \
-${suggestion ? `Suggestion: ${suggestion}. ` : ""}\
+${theme ? `Suggestion: ${theme}. ` : ""}\
 Focus on typography, icon placement, and professional branding. The wordmark \
 should be wide and horizontal. Keep the description to 2-3 sentences.`;
 
