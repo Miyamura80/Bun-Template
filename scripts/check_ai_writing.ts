@@ -6,21 +6,21 @@ const EM_DASH = "\u2014";
 
 const ROOT_SKIP_DIRS = new Set([
     ".git",
-    ".venv",
-    ".uv_cache",
-    ".uv-cache",
-    ".uv_tools",
-    ".uv-tools",
     ".cache",
-    "node_modules",
     ".next",
+    "node_modules",
+    "dist",
+    "out",
+    "build",
+    "coverage",
 ]);
 
-const RECURSIVE_SKIP_DIRS = new Set(["__pycache__", ".pytest_cache"]);
+const RECURSIVE_SKIP_DIRS = new Set(["node_modules", ".next"]);
 
 const SKIP_PATH_PREFIXES = [
     ["docs", ".next"],
     ["docs", "node_modules"],
+    ["frontend", "node_modules"],
 ];
 
 const SKIP_SUFFIXES = new Set([
@@ -30,6 +30,7 @@ const SKIP_SUFFIXES = new Set([
     ".gif",
     ".webp",
     ".ico",
+    ".svg",
     ".mp4",
     ".mov",
     ".mp3",
@@ -44,11 +45,9 @@ const SKIP_SUFFIXES = new Set([
     ".gz",
     ".bz2",
     ".7z",
-    ".ckpt",
     ".bin",
-    ".pyc",
-    ".pyo",
     ".db",
+    ".lock",
 ]);
 
 function shouldSkipDir(name: string, parts: string[]): boolean {
