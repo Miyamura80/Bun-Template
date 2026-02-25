@@ -66,6 +66,16 @@ check_bun:
 		bun --version; \
 	fi
 
+check_jq:
+	@echo "$(YELLOW)🔍Checking jq version...$(RESET)"
+	@if ! command -v jq > /dev/null 2>&1; then \
+		echo "$(RED)jq is not installed. Please install jq before proceeding.$(RESET)"; \
+		echo "$(RED)brew install jq$(RESET)"; \
+		exit 1; \
+	else \
+		jq --version; \
+	fi
+
 ########################################################
 # Setup
 ########################################################
