@@ -1,5 +1,5 @@
-import { readdir, readFile, stat } from "node:fs/promises";
-import { join, relative, extname } from "node:path";
+import { readFile, readdir } from "node:fs/promises";
+import { extname, join, relative } from "node:path";
 
 const REPO_ROOT = join(import.meta.dir, "..");
 const EM_DASH = "\u2014";
@@ -51,37 +51,34 @@ const SKIP_SUFFIXES = new Set([
     ".db",
 ]);
 
+function shouldSkipDir(name: string, parts: string[]): boolean {
+    if (parts.length === 1 && ROOT_SKIP_DIRS.has(name)) return true;
+    if (RECURSIVE_SKIP_DIRS.has(name)) return true;
+    return SKIP_PATH_PREFIXES.some(
+        (prefix) =>
+            parts.length >= prefix.length && prefix.every((p, i) => parts[i] === p),
+    );
+}
+
 async function* iterTextFiles(root: string): AsyncGenerator<string> {
     const entries = await readdir(root, { withFileTypes: true });
     for (const entry of entries) {
         const fullPath = join(root, entry.name);
-        const relPath = relative(REPO_ROOT, fullPath);
-        const parts = relPath.split("/");
+        const parts = relative(REPO_ROOT, fullPath).split("/");
 
         if (entry.isDirectory()) {
-            if (parts.length === 1 && ROOT_SKIP_DIRS.has(entry.name))
-                continue;
-            if (RECURSIVE_SKIP_DIRS.has(entry.name)) continue;
-            if (
-                SKIP_PATH_PREFIXES.some(
-                    (prefix) =>
-                        parts.length >= prefix.length &&
-                        prefix.every((p, i) => parts[i] === p),
-                )
-            )
-                continue;
-            yield* iterTextFiles(fullPath);
+            if (!shouldSkipDir(entry.name, parts)) {
+                yield* iterTextFiles(fullPath);
+            }
         } else if (entry.isFile()) {
-            if (SKIP_SUFFIXES.has(extname(entry.name).toLowerCase()))
-                continue;
-            yield fullPath;
+            if (!SKIP_SUFFIXES.has(extname(entry.name).toLowerCase())) {
+                yield fullPath;
+            }
         }
     }
 }
 
-function findEmDashes(
-    text: string,
-): Array<{ lineno: number; line: string }> {
+function findEmDashes(text: string): Array<{ lineno: number; line: string }> {
     const results: Array<{ lineno: number; line: string }> = [];
     const lines = text.split("\n");
     for (let i = 0; i < lines.length; i++) {
@@ -122,9 +119,7 @@ async function main(): Promise<number> {
         for (const { relPath, lineno, snippet } of violations) {
             console.log(`${relPath}:${lineno}: ${snippet}`);
         }
-        console.log(
-            "Please remove the em dash or explain why it is acceptable.",
-        );
+        console.log("Please remove the em dash or explain why it is acceptable.");
         return 1;
     }
 

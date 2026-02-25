@@ -25,8 +25,7 @@ module.exports = {
         },
         {
             name: "no-orphans",
-            comment:
-                "Modules that are not imported by anything are dead code.",
+            comment: "Modules that are not imported by anything are dead code.",
             severity: "warn",
             from: {
                 orphan: true,
@@ -48,13 +47,7 @@ module.exports = {
         includeOnly: ["^src/", "^tests/"],
         enhancedResolveOptions: {
             exportsFields: ["exports"],
-            conditionNames: [
-                "import",
-                "require",
-                "node",
-                "default",
-                "types",
-            ],
+            conditionNames: ["import", "require", "node", "default", "types"],
             mainFields: ["module", "main", "types", "typings"],
         },
     },
