@@ -17,6 +17,8 @@
 </p>
 
 <p align="center">
+  <img alt="Project Version" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FMiyamura80%2FBun-Template%2Fmain%2Fpackage.json&query=%24.version&label=version&color=blue">
+  <img alt="Bun" src="https://img.shields.io/badge/runtime-bun-f9f1e1?logo=bun">
   <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/Miyamura80/Bun-Template">
   <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/Miyamura80/Bun-Template/ci_checks.yaml?branch=main">
 </p>
