@@ -1,7 +1,7 @@
 {
-  "ignorePatterns": [
-    {
-      "pattern": "^http://localhost"
-    }
-  ]
+    "ignorePatterns": [
+        {
+            "pattern": "^http://localhost"
+        }
+    ]
 }

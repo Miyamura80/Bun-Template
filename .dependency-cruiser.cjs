@@ -1,12 +1,12 @@
 /** @type {import('dependency-cruiser').IConfiguration} */
 module.exports = {
-  options: {
-    doNotFollow: {
-      path: 'node_modules',
+    options: {
+        doNotFollow: {
+            path: "node_modules",
+        },
+        tsPreCompilationDeps: true,
+        tsConfig: {
+            fileName: "./tsconfig.json",
+        },
     },
-    tsPreCompilationDeps: true,
-    tsConfig: {
-      fileName: './tsconfig.json',
-    },
-  },
 };

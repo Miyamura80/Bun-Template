@@ -3,8 +3,8 @@ name: wait
 description: Pause execution for a requested number of minutes by sleeping one-minute increments to avoid exceeding shell timeouts.
 user_invocable: true
 triggers:
-  - /wait
-  - wait
+    - /wait
+    - wait
 ---
 
 # Wait Skill

@@ -18,8 +18,8 @@ GitHub Actions workflow.
 
 Configure these in **Settings > Secrets and variables > Actions** in GitHub:
 
-| Secret          | Description                                                  |
-|-----------------|--------------------------------------------------------------|
+| Secret          | Description                                                        |
+| --------------- | ------------------------------------------------------------------ |
 | `JULES_API_KEY` | Google Jules API key. Generate at <https://jules.google> Settings. |
 
 ## Adding or removing a language
@@ -29,7 +29,7 @@ Edit the `SUPPORTED_LANGS` env var in
 
 ```yaml
 env:
-  SUPPORTED_LANGS: "es,ja,zh"
+    SUPPORTED_LANGS: "es,ja,zh"
 ```
 
 - **Add** a locale by appending its ISO 639-1 code (e.g. `"es,ja,zh,pt"`).
@@ -40,13 +40,13 @@ filter, and the Jules prompt all derive from this variable.
 
 ## Failure modes and how to retry
 
-| Failure                         | Symptom                                       | Resolution                                                            |
-|---------------------------------|-----------------------------------------------|-----------------------------------------------------------------------|
-| **Jules API key invalid/expired** | Step "Create Jules translation session" fails with HTTP 401/403 | Rotate the key at <https://jules.google> and update the `JULES_API_KEY` secret. |
-| **Jules source not found**      | HTTP 404 on session creation                  | Verify the Jules GitHub App is installed on the repo. Check the source name with `GET /v1alpha/sources`. |
-| **Jules session fails**         | Poll step exits with `FAILED` state           | Check the Jules session UI (link in workflow logs) for details. Fix the underlying issue and re-run the workflow. |
-| **Poll timeout**                | Workflow times out after ~30 min of polling    | The Jules session may still be running. Check the Jules UI. If it completed, the PR exists. If not, re-run the workflow. |
-| **Transient 5xx errors**        | Warnings in logs, then success                | Built-in retry with exponential back-off handles these automatically. |
+| Failure                           | Symptom                                                         | Resolution                                                                                                               |
+| --------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Jules API key invalid/expired** | Step "Create Jules translation session" fails with HTTP 401/403 | Rotate the key at <https://jules.google> and update the `JULES_API_KEY` secret.                                          |
+| **Jules source not found**        | HTTP 404 on session creation                                    | Verify the Jules GitHub App is installed on the repo. Check the source name with `GET /v1alpha/sources`.                 |
+| **Jules session fails**           | Poll step exits with `FAILED` state                             | Check the Jules session UI (link in workflow logs) for details. Fix the underlying issue and re-run the workflow.        |
+| **Poll timeout**                  | Workflow times out after ~30 min of polling                     | The Jules session may still be running. Check the Jules UI. If it completed, the PR exists. If not, re-run the workflow. |
+| **Transient 5xx errors**          | Warnings in logs, then success                                  | Built-in retry with exponential back-off handles these automatically.                                                    |
 
 ### Manual retry
 

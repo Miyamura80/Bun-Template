@@ -3,7 +3,7 @@ name: cleanup
 description: Git branch hygiene - delete merged/closed branch, prune stale refs, sync dependencies
 user_invocable: true
 triggers:
-  - /cleanup
+    - /cleanup
 ---
 
 # Git Cleanup Skill
@@ -25,6 +25,7 @@ Store the result as `CURRENT_BRANCH`.
 ### 2. Guard against main/master
 
 If `CURRENT_BRANCH` is `main` or `master`:
+
 - Report: "Already on main branch. No branch to clean up."
 - Skip to step 7 (pull latest) and continue from there.
 
@@ -35,12 +36,14 @@ git status --porcelain
 ```
 
 If output is non-empty:
+
 - Warn the user: "You have uncommitted changes. Please commit or stash them first."
 - Stop and do not proceed.
 
 ### 4. Check if branch is merged or closed
 
 First check for merged PRs:
+
 ```bash
 gh pr list --state merged --head CURRENT_BRANCH --json number
 ```
@@ -48,15 +51,18 @@ gh pr list --state merged --head CURRENT_BRANCH --json number
 If merged, proceed to step 5.
 
 If not merged, check for closed PRs:
+
 ```bash
 gh pr list --state closed --head CURRENT_BRANCH --json number
 ```
 
 If closed (result is non-empty):
+
 - Report: "Branch 'CURRENT_BRANCH' has a closed (unmerged) PR. Proceeding with deletion."
 - Proceed to step 5 (will use force delete in step 6).
 
 If neither merged nor closed:
+
 - Check if the branch is merged locally: `git branch --merged main | grep -w CURRENT_BRANCH`
 - If not merged anywhere, warn: "Branch 'CURRENT_BRANCH' does not appear to be merged or closed. Use `git branch -D` manually if you want to force delete."
 - Stop and do not proceed.
@@ -72,11 +78,13 @@ git checkout main
 ### 6. Delete the branch
 
 If branch was `MERGED`:
+
 ```bash
 git branch -d CURRENT_BRANCH
 ```
 
 If branch was `CLOSED` (PR closed without merging):
+
 ```bash
 git branch -D CURRENT_BRANCH
 ```
@@ -128,6 +136,7 @@ git gc --prune=now
 ### 12. Summary
 
 Report completion:
+
 - Branch deleted (if applicable)
 - Number of stale branches pruned
 - Dependencies synced (which package manager)

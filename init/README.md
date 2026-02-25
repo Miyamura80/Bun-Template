@@ -9,6 +9,7 @@ This directory contains one-time initialization scripts for generating brand ass
 Generates a banner image for the project using LLM-powered description generation and Gemini's image generation.
 
 **Usage:**
+
 ```bash
 # From project root
 make banner
@@ -21,9 +22,11 @@ uv run python -m init.generate_banner
 ```
 
 **Output:**
+
 - `media/banner.png` - Wide horizontal banner (16:9 aspect ratio)
 
 **Configuration:**
+
 - Edit the `title` and `suggestion` variables in the `__main__` block
 - Uses Japanese minimalist sumi-e style by default
 
@@ -32,6 +35,7 @@ uv run python -m init.generate_banner
 Generates a logo and favicon for the documentation site using LLM-powered description generation and Gemini's image generation. The favicon icon is extracted from the wordmark to ensure visual consistency.
 
 **Usage:**
+
 ```bash
 # From project root
 make logo
@@ -44,18 +48,21 @@ uv run python -m init.generate_logo
 ```
 
 **Output:**
+
 - `docs/public/icon.png` - Icon-only version (512x512, for Apple touch icon)
 - `docs/public/favicon.ico` - Favicon (32x32, icon-only, no text)
 - `docs/public/logo-light.png` - Horizontal wordmark for light mode (3200x800)
 - `docs/public/logo-dark.png` - Horizontal wordmark for dark mode (3200x800)
 
 **Configuration:**
+
 - Edit the `project_name` and `suggestion` variables in the `__main__` block
 - Uses minimalist, modern design style by default
 
 ## Dependencies
 
 Both scripts require:
+
 - `PIL` (Pillow) - Image manipulation
 - `google-genai` - Gemini API for image generation
 - `GEMINI_API_KEY` - Set in your `.env` file

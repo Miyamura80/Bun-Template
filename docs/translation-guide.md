@@ -34,11 +34,11 @@ Keep the following in English (untranslated) in every locale.
 
 ## File naming convention
 
-| Type             | Pattern                          | Example                                    |
-|------------------|----------------------------------|--------------------------------------------|
-| English (source) | `<name>.mdx`                     | `docs/content/docs/index.mdx`              |
-| Translation      | `<name>.<lang>.mdx`              | `docs/content/docs/index.ja.mdx`           |
-| Section metadata | `meta.json` / `meta.<lang>.json` | `docs/content/docs/meta.ja.json`           |
+| Type             | Pattern                          | Example                          |
+| ---------------- | -------------------------------- | -------------------------------- |
+| English (source) | `<name>.mdx`                     | `docs/content/docs/index.mdx`    |
+| Translation      | `<name>.<lang>.mdx`              | `docs/content/docs/index.ja.mdx` |
+| Section metadata | `meta.json` / `meta.<lang>.json` | `docs/content/docs/meta.ja.json` |
 
 ## Translation PR rules
 

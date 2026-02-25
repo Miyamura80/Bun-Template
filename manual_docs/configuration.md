@@ -36,9 +36,9 @@ The config system merges values from multiple sources. Higher priority sources o
 1. **Environment variables** (highest priority)
 2. **`.env` file** (or `.prod.env` when `DEV_ENV=prod`)
 3. **YAML files** (merged in order):
-   - `.global_config.yaml` (local overrides, git-ignored)
-   - `production_config.yaml` (when `DEV_ENV=prod`)
-   - `global_config.yaml` (base config)
+    - `.global_config.yaml` (local overrides, git-ignored)
+    - `production_config.yaml` (when `DEV_ENV=prod`)
+    - `global_config.yaml` (base config)
 
 ## Adding New Config Values
 
@@ -48,8 +48,8 @@ Add your values to `common/global_config.yaml`:
 
 ```yaml
 my_feature:
-  enabled: true
-  threshold: 0.5
+    enabled: true
+    threshold: 0.5
 ```
 
 ### 2. Create Pydantic Model
@@ -108,15 +108,16 @@ To override config values locally without modifying tracked files, create `.glob
 ```yaml
 # .global_config.yaml (git-ignored)
 llm_config:
-  cache_enabled: true
+    cache_enabled: true
 
 logging:
-  verbose: false
+    verbose: false
 ```
 
 ## Production Configuration
 
 When `DEV_ENV=prod` is set:
+
 - `.prod.env` is loaded instead of `.env`
 - `production_config.yaml` values override `global_config.yaml`
 

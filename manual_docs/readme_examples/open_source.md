@@ -1,6 +1,3 @@
-
-
-
 ## How to contribute
 
 1. Clone repo and create a new branch: `$ git checkout https://github.com/Miyamura80/python-template.git`

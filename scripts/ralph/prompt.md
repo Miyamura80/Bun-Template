@@ -18,6 +18,7 @@ You are an autonomous coding agent working on a software project.
 ## Progress Report Format
 
 APPEND to progress.txt (never replace, always append):
+
 ```
 ## [Date/Time] - [Story ID]
 Session: https://opencode.ai/sessions/[SESSION_ID]
@@ -54,19 +55,21 @@ Before committing, check if any edited files have learnings worth preserving in 
 1. **Identify directories with edited files** - Look at which directories you modified
 2. **Check for existing AGENTS.md** - Look for AGENTS.md in those directories or parent directories
 3. **Add valuable learnings** - If you discovered something future developers/agents should know:
-   - API patterns or conventions specific to that module
-   - Gotchas or non-obvious requirements
-   - Dependencies between files
-   - Testing approaches for that area
-   - Configuration or environment requirements
+    - API patterns or conventions specific to that module
+    - Gotchas or non-obvious requirements
+    - Dependencies between files
+    - Testing approaches for that area
+    - Configuration or environment requirements
 
 **Examples of good AGENTS.md additions:**
+
 - "When modifying X, also update Y to keep them in sync"
 - "This module uses pattern Z for all API calls"
 - "Tests require the dev server running on PORT 3000"
 - "Field names must match the template exactly"
 
 **Do NOT add:**
+
 - Story-specific implementation details
 - Temporary debugging notes
 - Information already in progress.txt
@@ -105,4 +108,4 @@ If there are still stories with `passes: false`, end your response normally (ano
 - Work on ONE story per iteration
 - Commit frequently
 - Keep CI green
-- Read the Codebase Patterns section in progress.txt before starting 
+- Read the Codebase Patterns section in progress.txt before starting

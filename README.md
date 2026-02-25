@@ -27,29 +27,28 @@
 
 </p>
 
---- 
+---
 
 <p align="center">
   <img src="media/creating_banner.gif" alt="2" width="600">
 </p>
 
-
 ## Key Features
 
 Opinionated Python stack for fast development. The `saas` branch extends `main` with web framework, auth, and payments.
 
-| Feature | `main` | `saas` |
-|---------|:------:|:------:|
-| UV + Pydantic config | ✅ | ✅ |
-| CI/Linters (Ruff, Vulture) | ✅ | ✅ |
-| Pre-commit hooks (prek) | ✅ | ✅ |
-| LLM (DSPY + LangFuse Observability) | ✅ | ✅ |
-| FastAPI + Uvicorn | ❌ | ✅ |
-| SQLAlchemy + Alembic | ❌ | ✅ |
-| Auth (WorkOS + API keys) | ❌ | ✅ |
-| Payments (Stripe) | ❌ | ✅ |
-| Referrals + Agent system | ❌ | ✅ |
-| Ralph Wiggum Agent Loop | ✅ | ✅ |
+| Feature                             | `main` | `saas` |
+| ----------------------------------- | :----: | :----: |
+| UV + Pydantic config                |   ✅   |   ✅   |
+| CI/Linters (Ruff, Vulture)          |   ✅   |   ✅   |
+| Pre-commit hooks (prek)             |   ✅   |   ✅   |
+| LLM (DSPY + LangFuse Observability) |   ✅   |   ✅   |
+| FastAPI + Uvicorn                   |   ❌   |   ✅   |
+| SQLAlchemy + Alembic                |   ❌   |   ✅   |
+| Auth (WorkOS + API keys)            |   ❌   |   ✅   |
+| Payments (Stripe)                   |   ❌   |   ✅   |
+| Referrals + Agent system            |   ❌   |   ✅   |
+| Ralph Wiggum Agent Loop             |   ✅   |   ✅   |
 
 [Full comparison](manual_docs/branch_comparison.md)
 
@@ -61,8 +60,6 @@ Opinionated Python stack for fast development. The `saas` branch extends `main` 
 - `make banner` - create a new banner that makes the README nice 😊
 - `make test` - runs all tests in `tests/`
 - `make ci` - runs all CI checks (ruff, vulture, ty, etc.)
-
-
 
 ## Configuration
 
@@ -81,6 +78,7 @@ global_config.OPENAI_API_KEY
 ## Credits
 
 This software uses the following tools:
+
 - [Cursor: The AI Code Editor](https://cursor.com)
 - [uv](https://docs.astral.sh/uv/)
 - [prek: Rust-based pre-commit framework](https://github.com/j178/prek)

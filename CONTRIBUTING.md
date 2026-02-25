@@ -3,10 +3,11 @@
 ## Getting Started
 
 1.  **Prerequisites**:
-    *   Python >= 3.12
-    *   `uv` (for dependency management)
+    - Python >= 3.12
+    - `uv` (for dependency management)
 
 2.  **Setup**:
+
     ```bash
     make setup
     ```
@@ -28,11 +29,11 @@
 
 ## Code Style
 
-*   Follow the existing conventions (snake_case for functions, CamelCase for classes).
-*   Use `ruff` for linting and formatting (handled by `make fmt` and `make ruff`).
-*   Add tests for new features.
+- Follow the existing conventions (snake_case for functions, CamelCase for classes).
+- Use `ruff` for linting and formatting (handled by `make fmt` and `make ruff`).
+- Add tests for new features.
 
 ## Pull Requests
 
-*   Keep PRs focused on a single change.
-*   Update documentation if necessary.
+- Keep PRs focused on a single change.
+- Update documentation if necessary.

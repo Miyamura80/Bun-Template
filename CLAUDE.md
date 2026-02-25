@@ -44,10 +44,10 @@ uv run pytest path/to/test.py  # Run specific test
 ## Architecture
 
 - **common/** - Global configuration via pydantic-settings
-  - `global_config.yaml` - Base hyperparameters and config values
-  - `<name>.yaml` - Optional split configs (loaded as root key `<name>`)
-  - `global_config.py` - Config class (access via `from common import global_config`)
-  - `.env` - Secrets/API keys (git-ignored)
+    - `global_config.yaml` - Base hyperparameters and config values
+    - `<name>.yaml` - Optional split configs (loaded as root key `<name>`)
+    - `global_config.py` - Config class (access via `from common import global_config`)
+    - `.env` - Secrets/API keys (git-ignored)
 - **src/** - Source code (utils/)
 - **utils/llm/** - LLM inference with DSPY (`dspy_inference.py`) and LangFuse observability
 - **tests/** - pytest tests inheriting from `TestTemplate` in `test_template.py`
@@ -119,6 +119,7 @@ log.error("error message for error events")
 ## Commit Message Convention
 
 Use emoji prefixes indicating change type and magnitude (multiple emojis = 5+ files):
+
 - 🏗️ initial implementation
 - 🔨 feature changes
 - 🐛 bugfix
@@ -130,11 +131,13 @@ Use emoji prefixes indicating change type and magnitude (multiple emojis = 5+ fi
 ## Long-Running Code Pattern
 
 Structure as: `init()` → `continue(id)` → `cleanup(id)`
+
 - Keep state serializable
 - Use descriptive IDs (runId, taskId)
 - Handle rate limits, timeouts, retries at system boundaries
 
 ## Git Workflow
+
 - **Protected Branch**: `main` is protected. Do not push directly to `main`. Use PRs.
 - **Merge Strategy**: Squash and merge.
 - **Never force push**: Do not use `git push --force` or `--force-with-lease`. If you hit a git issue, stop and ask the user for guidance.
