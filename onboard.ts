@@ -410,7 +410,8 @@ async function cmdMedia(): Promise<boolean> {
     }
 
     const pkg = readPackageJson();
-    const title = pkg.name !== DEFAULT_NAME ? pkg.name : DEFAULT_DISPLAY_NAME;
+    const title =
+        pkg.name !== DEFAULT_NAME ? toDisplayName(pkg.name) : DEFAULT_DISPLAY_NAME;
 
     const theme = exitIfCancelled(
         await p.text({
