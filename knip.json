@@ -1,5 +1,5 @@
 {
     "entry": ["src/**/*.ts"],
     "project": ["src/**/*.ts"],
-    "ignoreDependencies": ["markdown-link-check"]
+    "ignoreDependencies": ["markdown-link-check", "jscpd"]
 }
