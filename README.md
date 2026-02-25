@@ -29,10 +29,6 @@
   <img src="media/demo.gif" alt="Bun-Template Demo" width="600">
 </p>
 
-<p align="center">
-  <img src="media/creating_banner.gif" alt="2" width="600">
-</p>
-
 ## Key Features
 
 | Feature | Description |

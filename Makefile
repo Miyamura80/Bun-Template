@@ -43,7 +43,7 @@ onboard: check_bun ## Interactive onboarding CLI (rename, deps, env, hooks, medi
 ########################################################
 
 ### Asset Generation
-.PHONY: banner logo gif gif_dev
+.PHONY: banner logo
 banner: check_bun ## Generate project banner image
 	@echo "$(YELLOW)🎨 Generating banner...$(RESET)"
 	@bun run scripts/generate-banner.ts
@@ -53,17 +53,6 @@ logo: check_bun ## Generate logo, icons, and favicon
 	@echo "$(YELLOW)🎨 Generating logo suite...$(RESET)"
 	@bun run scripts/generate-logo.ts
 	@echo "$(GREEN)✅ Logo suite generated in docs/public/$(RESET)"
-
-gif: check_bun ## Render demo GIF to media/demo.gif
-	@echo "$(YELLOW)🎬 Rendering demo GIF...$(RESET)"
-	@cd gif && bun install --frozen-lockfile 2>/dev/null || cd gif && bun install
-	@cd gif && bunx remotion render Demo ../media/demo.gif --codec gif
-	@echo "$(GREEN)✅ Demo GIF rendered at media/demo.gif$(RESET)"
-
-gif_dev: check_bun ## Open Remotion Studio for GIF preview
-	@echo "$(YELLOW)🎬 Opening Remotion Studio...$(RESET)"
-	@cd gif && bun install --frozen-lockfile 2>/dev/null || cd gif && bun install
-	@cd gif && bunx remotion studio
 
 ########################################################
 # Check dependencies
