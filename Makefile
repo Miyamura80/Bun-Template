@@ -220,19 +220,9 @@ ruff: install_tools ## Run ruff linter
 	@uv tool run ruff check
 	@echo "$(GREEN)✅Ruff completed.$(RESET)"
 
-complexity: install_tools ## Check cyclomatic complexity (Python)
-	@echo "$(YELLOW)🔍Checking cyclomatic complexity...$(RESET)"
-	@uv tool run ruff check --select C901
-	@echo "$(GREEN)✅Complexity check completed.$(RESET)"
-
 tech_debt: check_bun ## Check TODO/FIXME markers in TypeScript/JavaScript
 	@echo "$(YELLOW)🔍Checking tech debt markers...$(RESET)"
 	@! git grep -nEI "(TODO|FIXME|HACK|XXX)" -- '*.ts' '*.tsx' '*.js' '*.jsx' || (echo "$(RED)Tech debt markers found. Please resolve or remove them.$(RESET)" && exit 1)
-	@echo "$(GREEN)✅Tech debt check completed.$(RESET)"
-
-tech_debt_python: install_tools ## Check TODO/FIXME markers (Python)
-	@echo "$(YELLOW)🔍Checking tech debt markers...$(RESET)"
-	@uv tool run ruff check --select FIX
 	@echo "$(GREEN)✅Tech debt check completed.$(RESET)"
 
 duplicate_code: check_bun ## Detect duplicate code blocks
