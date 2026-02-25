@@ -86,6 +86,13 @@ Use emoji prefixes indicating change type and magnitude (multiple emojis = 5+ fi
 - ⚙️ config changes
 - 💽 DB schema/migrations
 
+## Post-Change Checks
+
+After major changes, always run `make ci` and fix any issues before committing. If `make ci` is too slow for iterative work, run at minimum:
+- `make fmt` (auto-fix formatting)
+- `make lint` (check for errors)
+- `make typecheck` (verify types)
+
 ## Git Workflow
 - **Protected Branch**: `main` is protected. Do not push directly to `main`. Use PRs.
 - **Merge Strategy**: Squash and merge.
