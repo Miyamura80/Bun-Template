@@ -13,6 +13,9 @@ node_modules/
 dist/
 out/
 
+# GIF generation (Remotion project)
+gif/
+
 # Environment
 .env
 .env.*
