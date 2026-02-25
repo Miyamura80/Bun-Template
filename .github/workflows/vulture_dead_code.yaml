@@ -1,4 +1,4 @@
-name: Vulture - Clean Dead Code
+name: Dead Code Check
 
 on:
   pull_request:
@@ -16,26 +16,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      with:
-        submodules: 'recursive'
-        token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Checkout submodules
-      run: |
-        git submodule init
-        git submodule update
-  
-    - name: Read Python version
-      run: echo "PYTHON_VERSION=$(cat .python-version | tr -d '\n')" >> $GITHUB_ENV
-    - run: |
-        echo "Log Level: ${{ github.event.inputs.log_level }}"
-        echo "Environment: ${{ github.event.inputs.environment }}"
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: ${{ env.PYTHON_VERSION }}
-    - name: Install uv
-      run: curl -LsSf https://astral.sh/uv/install.sh | sh
-    - name: Run Vulture
-      run: |
-        uv sync
-        make vulture
+    - uses: oven-sh/setup-bun@v2
+    - name: Install dependencies
+      run: bun install
+    - name: Run knip
+      run: make deadcode
