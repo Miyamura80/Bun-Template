@@ -196,6 +196,7 @@ function exitIfCancelled<T>(value: T | symbol): T {
 // ──────────────────────────────────────────────
 
 const DEFAULT_NAME = "bun-template";
+const DEFAULT_DISPLAY_NAME = "Bun-Template";
 const DEFAULT_DESCRIPTION = "\u{1F95F} Agent-ergonomic opinionated Bun template";
 const DEFAULT_GITHUB_REPO = "Miyamura80/Bun-Template";
 
@@ -402,7 +403,7 @@ async function cmdMedia(): Promise<boolean> {
     }
 
     const pkg = readPackageJson();
-    const title = pkg.name !== DEFAULT_NAME ? pkg.name : "Bun-Template";
+    const title = pkg.name !== DEFAULT_NAME ? pkg.name : DEFAULT_DISPLAY_NAME;
 
     const theme = exitIfCancelled(
         await p.text({
