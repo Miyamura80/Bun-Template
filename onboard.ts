@@ -30,6 +30,13 @@ function validateKebabCase(value: string): string | undefined {
     return undefined;
 }
 
+function toDisplayName(kebab: string): string {
+    return kebab
+        .split("-")
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join("-");
+}
+
 const SECRET_PATTERNS = ["SECRET", "_KEY", "TOKEN", "PASSWORD", "PASS", "CREDENTIAL"];
 
 function isSecretKey(key: string): boolean {
@@ -250,7 +257,7 @@ async function cmdRename(): Promise<boolean> {
             content = content.replaceAll(DEFAULT_GITHUB_REPO, githubRepo);
         }
         content = content.replaceAll(DEFAULT_NAME, name);
-        content = content.replaceAll("Bun-Template", name);
+        content = content.replaceAll(DEFAULT_DISPLAY_NAME, toDisplayName(name));
         if (description) {
             content = content.replaceAll(DEFAULT_DESCRIPTION, description);
         }
