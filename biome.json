@@ -47,7 +47,6 @@
             "bun.lock",
             "docs",
             "frontend",
-            "gif",
             "manual_docs",
             "media"
         ]
