@@ -24,3 +24,5 @@ jobs:
         run: make deadcode
       - name: Run type check
         run: make typecheck
+      - name: Run AI writing check
+        run: bun run scripts/check_ai_writing.ts
