@@ -47,11 +47,8 @@
             "bun.lock",
             "docs",
             "frontend",
-            "common",
-            "init",
             "manual_docs",
-            "media",
-            "utils"
+            "media"
         ]
     }
 }

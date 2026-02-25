@@ -5,8 +5,6 @@ RED=\033[0;31m
 BLUE=\033[0;34m
 RESET=\033[0m
 
-PYTHON=uv run
-TEST=uv run pytest
 PROJECT_ROOT=.
 
 .DEFAULT_GOAL := help
@@ -36,7 +34,7 @@ help: ## Show this help message
 ########################################################
 
 ### Initialization
-.PHONY: init banner logo
+.PHONY: init
 init: check_jq ## Initialize project (usage: make init name=my-project description="my description")
 	@if [ -z "$(name)" ] || [ -z "$(description)" ]; then \
 		echo "$(RED)Error: Both 'name' and 'description' parameters are required$(RESET)"; \
@@ -48,16 +46,6 @@ init: check_jq ## Initialize project (usage: make init name=my-project descripti
 	@sed -i.bak "s/# Bun-Template/# $(name)/" README.md && rm README.md.bak
 	@echo "$(GREEN)✅ Updated project name and description.$(RESET)"
 
-banner: check_uv ## Generate project banner image
-	@echo "$(YELLOW)🔍Generating banner...$(RESET)"
-	@uv run python -m init.generate_banner
-	@echo "$(GREEN)✅Banner generated.$(RESET)"
-
-logo: check_uv ## Generate logo and favicon for docs
-	@echo "$(YELLOW)🔍Generating logo and favicon...$(RESET)"
-	@uv run python -m init.generate_logo
-	@echo "$(GREEN)✅Logo and favicon generated in docs/public/$(RESET)"
-
 ########################################################
 # Check dependencies
 ########################################################
@@ -68,15 +56,6 @@ check_bun:
 		exit 1; \
 	else \
 		bun --version; \
-	fi
-
-check_uv:
-	@echo "$(YELLOW)🔍Checking uv version...$(RESET)"
-	@if ! command -v uv > /dev/null 2>&1; then \
-		echo "$(RED)uv is not installed. Please install uv before proceeding.$(RESET)"; \
-		exit 1; \
-	else \
-		uv --version; \
 	fi
 
 check_jq:
@@ -146,8 +125,6 @@ ralph: check_jq ## Run Ralph agent loop
 # Testing
 ########################################################
 
-TEST_TARGETS = tests/
-
 ### Testing
 test: check_bun ## Run all tests
 	@echo "$(GREEN)🧪 Running tests...$(RESET)"
@@ -162,49 +139,11 @@ test_fast: check_bun ## Run fast tests (5s timeout)
 test_watch: check_bun ## Run tests in watch mode
 	@bun test --watch
 
-test_slow: check_uv ## Run slow tests only
-	@echo "$(GREEN)🧪Running Slow Tests...$(RESET)"
-	@$(TEST) -m "slow" $(TEST_TARGETS); \
-	status=$$?; \
-	if [ $$status -eq 5 ]; then \
-		echo "$(YELLOW)⚠️ No slow tests collected.$(RESET)"; \
-		exit 0; \
-	fi; \
-	exit $$status
-
-test_nondeterministic: check_uv ## Run nondeterministic tests only
-	@echo "$(GREEN)🧪Running Nondeterministic Tests...$(RESET)"
-	@$(TEST) -m "nondeterministic" $(TEST_TARGETS); \
-	status=$$?; \
-	if [ $$status -eq 5 ]; then \
-		echo "$(YELLOW)⚠️ No nondeterministic tests collected.$(RESET)"; \
-		exit 0; \
-	fi; \
-	exit $$status
-
-test_flaky: check_uv ## Repeat fast tests to detect flaky tests
-	@echo "$(GREEN)🧪Running Flaky Test Detection...$(RESET)"
-	$(TEST) --count 2 -m "not slow and not nondeterministic" $(TEST_TARGETS)
-	@echo "$(GREEN)✅Flaky Test Detection Passed.$(RESET)"
-
 ########################################################
 # Code Quality
 ########################################################
 
-# Linter will ignore these directories
-IGNORE_LINT_DIRS = .venv venv
-LINE_LENGTH = 88
-FIND_PRUNE = $(foreach dir,$(IGNORE_LINT_DIRS),-path "./$(dir)" -o) -false
-
 ### Code Quality
-install_tools: check_uv ## Install linting/formatting tools
-	@echo "$(YELLOW)🔧Installing tools...$(RESET)"
-	@uv tool install ruff --force
-	@uv tool install import-linter --force
-	@uv tool install ty --force
-	@uv tool install vulture --force
-	@echo "$(GREEN)✅Tools installed.$(RESET)"
-
 fmt: check_bun ## Format code with Biome
 	@echo "$(YELLOW)✨ Formatting with Biome...$(RESET)"
 	@bunx biome check --write
@@ -214,11 +153,6 @@ lint: check_bun ## Run Biome linter
 	@echo "$(YELLOW)🔍 Running Biome linter...$(RESET)"
 	@bunx biome check
 	@echo "$(GREEN)✅ Linting completed.$(RESET)"
-
-ruff: install_tools ## Run ruff linter
-	@echo "$(YELLOW)🔍Running ruff...$(RESET)"
-	@uv tool run ruff check
-	@echo "$(GREEN)✅Ruff completed.$(RESET)"
 
 tech_debt: check_bun ## Check TODO/FIXME markers in TypeScript/JavaScript
 	@echo "$(YELLOW)🔍Checking tech debt markers...$(RESET)"
@@ -230,40 +164,20 @@ duplicate_code: check_bun ## Detect duplicate code blocks
 	@bunx jscpd src/ --min-lines 5 --min-tokens 50 --threshold 5
 	@echo "$(GREEN)✅Duplicate code check completed.$(RESET)"
 
-duplicate_code_python: check_uv ## Detect duplicate code blocks (Python)
-	@echo "$(YELLOW)🔍Checking duplicate code...$(RESET)"
-	@uv run pylint --disable=all --enable=R0801 src common utils
-	@echo "$(GREEN)✅Duplicate code check completed.$(RESET)"
-
 deadcode: check_bun ## Find dead code and unused deps with knip
 	@echo "$(YELLOW)🔍 Running knip (dead code + unused deps)...$(RESET)"
 	@bunx knip
 	@echo "$(GREEN)✅ Dead code check completed.$(RESET)"
-
-vulture: install_tools ## Find dead Python code with vulture
-	@echo "$(YELLOW)🔍Running Vulture...$(RESET)"
-	@uv tool run vulture .
-	@echo "$(GREEN)✅Vulture completed.$(RESET)"
 
 import_lint: check_bun ## Enforce module boundaries with dependency-cruiser
 	@echo "$(YELLOW)🔍 Running dependency-cruiser...$(RESET)"
 	@bunx depcruise src tests --config .dependency-cruiser.cjs --output-type err
 	@echo "$(GREEN)✅ Module boundary check completed.$(RESET)"
 
-import_lint_python: install_tools ## Enforce module boundaries with import-linter (Python)
-	@echo "$(YELLOW)🔍Running Import Linter...$(RESET)"
-	@uv tool run --from import-linter lint-imports
-	@echo "$(GREEN)✅Import Linter completed.$(RESET)"
-
 typecheck: check_bun ## Run TypeScript type checker
 	@echo "$(YELLOW)🔍 Running TypeScript type checker...$(RESET)"
 	@bunx tsc --noEmit
 	@echo "$(GREEN)✅ Type check completed.$(RESET)"
-
-ty: install_tools ## Run Python type checker
-	@echo "$(YELLOW)🔍Running Typer...$(RESET)"
-	@uv run ty check
-	@echo "$(GREEN)✅Typer completed.$(RESET)"
 
 docs_lint: ## Lint docs links
 	@echo "$(YELLOW)🔍Linting docs links...$(RESET)"
@@ -275,24 +189,10 @@ lint_links: check_bun ## Check markdown links
 	@find . -name "*.md" -not -path "./node_modules/*" | xargs bunx markdown-link-check --quiet --config .markdown-link-check.json
 	@echo "$(GREEN)✅ Link linting completed.$(RESET)"
 
-agents_validate: ## Validate AGENTS.md content
+agents_validate: check_bun ## Validate AGENTS.md content
 	@echo "$(YELLOW)🔍Validating AGENTS.md...$(RESET)"
-	@$(PYTHON) scripts/validate_agents_md.py
+	@bun run scripts/validate-agents-md.ts
 	@echo "$(GREEN)✅AGENTS.md validation completed.$(RESET)"
-
-check_deps: install_tools ## Check for unused dependencies
-	@echo "$(YELLOW)🔍Checking unused dependencies...$(RESET)"
-	@uv run deptry .
-	@echo "$(GREEN)✅Dependency check completed.$(RESET)"
 
 ci: lint deadcode typecheck tech_debt duplicate_code import_lint lint_links ## Run all CI checks
 	@echo "$(GREEN)✅ CI checks completed.$(RESET)"
-
-########################################################
-# Dependencies
-########################################################
-
-requirements:
-	@echo "$(YELLOW)🔍Checking requirements...$(RESET)"
-	@cp requirements-dev.lock requirements.txt
-	@echo "$(GREEN)✅Requirements checked.$(RESET)"

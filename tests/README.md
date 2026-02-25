@@ -2,24 +2,22 @@
 
 ## Writing tests
 
-Tests are written using pytest. To add a new test, create a new file/directory in the `tests` directory.
+Tests are written using `bun:test`. To add a new test, create a `.test.ts` file in the `tests` directory.
 
+```typescript
+import { describe, test, expect } from "bun:test";
 
-
+describe("MyFeature", () => {
+    test("should do something", () => {
+        expect(true).toBe(true);
+    });
+});
+```
 
 ## Running tests
 
-To run the tests, you can use the following commands:
-
-1. For deterministic tests (Run in CI):
-   ```bash
-   make test
-   ```
-
-
-
-These commands use `uv` to execute the tests. Make sure you have `uv` installed and your Python dependencies are up to date. You can update dependencies by running:
-
 ```bash
-uv sync
+make test          # Run all tests
+make test_fast     # Run with 5s timeout
+make test_watch    # Run in watch mode
 ```

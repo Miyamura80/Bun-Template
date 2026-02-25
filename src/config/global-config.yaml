@@ -1,6 +1,6 @@
 model_name: gemini/gemini-3-flash-preview
 dot_global_config_health_check: true
-DEV_ENV: dev
+dev_env: dev
 
 example_parent:
   example_child: "example_value"
@@ -70,5 +70,3 @@ logging:
       - name: "GENERIC_KEY"
         regex: "(?i:(?:api[_-]?key|project[_-]?key|secret[_-]?key)[=:\\s]+['\"]?[a-zA-Z0-9_\\-]{16,}['\"]?)"
         placeholder: "[REDACTED_KEY]"
-
-
