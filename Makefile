@@ -105,17 +105,15 @@ setup_githooks: ## Set up git hooks with prek
 	@bun install -g @j178/prek
 	@prek install
 
-view_python_venv_size:
-	@echo "$(YELLOW)🔍Checking python venv size...$(RESET)"
-	@PYTHON_VERSION=$$(cat .python-version | cut -d. -f1,2) && \
-	cd .venv/lib/python$$PYTHON_VERSION/site-packages && du -sh . && cd ../../../
-	@echo "$(GREEN)Python venv size check completed.$(RESET)"
+view_deps_size: check_bun ## Show total node_modules size
+	@echo "$(YELLOW)🔍Checking node_modules size...$(RESET)"
+	@du -sh node_modules
+	@echo "$(GREEN)Done.$(RESET)"
 
-view_python_venv_size_by_libraries:
-	@echo "$(YELLOW)🔍Checking python venv size by libraries...$(RESET)"
-	@PYTHON_VERSION=$$(cat .python-version | cut -d. -f1,2) && \
-	cd .venv/lib/python$$PYTHON_VERSION/site-packages && du -sh * | sort -h && cd ../../../
-	@echo "$(GREEN)Python venv size by libraries check completed.$(RESET)"
+view_deps_size_by_package: check_bun ## Show node_modules size by package
+	@echo "$(YELLOW)🔍Checking node_modules size by package...$(RESET)"
+	@du -sh node_modules/*/ | sort -h
+	@echo "$(GREEN)Done.$(RESET)"
 
 ########################################################
 # Run
