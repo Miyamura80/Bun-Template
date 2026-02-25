@@ -271,7 +271,12 @@ vulture: install_tools ## Find dead Python code with vulture
 	@uv tool run vulture .
 	@echo "$(GREEN)✅Vulture completed.$(RESET)"
 
-import_lint: install_tools ## Enforce module boundaries with import-linter
+import_lint: check_bun ## Enforce module boundaries with dependency-cruiser
+	@echo "$(YELLOW)🔍 Running dependency-cruiser...$(RESET)"
+	@bunx depcruise src tests --config .dependency-cruiser.cjs --output-type err
+	@echo "$(GREEN)✅ Module boundary check completed.$(RESET)"
+
+import_lint_python: install_tools ## Enforce module boundaries with import-linter (Python)
 	@echo "$(YELLOW)🔍Running Import Linter...$(RESET)"
 	@uv tool run --from import-linter lint-imports
 	@echo "$(GREEN)✅Import Linter completed.$(RESET)"
@@ -306,7 +311,7 @@ check_deps: install_tools ## Check for unused dependencies
 	@uv run deptry .
 	@echo "$(GREEN)✅Dependency check completed.$(RESET)"
 
-ci: lint deadcode typecheck tech_debt duplicate_code lint_links ## Run all CI checks
+ci: lint deadcode typecheck tech_debt duplicate_code import_lint lint_links ## Run all CI checks
 	@echo "$(GREEN)✅ CI checks completed.$(RESET)"
 
 ########################################################

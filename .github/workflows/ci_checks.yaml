@@ -28,5 +28,7 @@ jobs:
         run: make tech_debt
       - name: Run duplicate code check
         run: make duplicate_code
+      - name: Run import boundary check
+        run: make import_lint
       - name: Run AI writing check
         run: bun run scripts/check_ai_writing.ts
