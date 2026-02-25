@@ -47,6 +47,22 @@ init: check_jq ## Initialize project (usage: make init name=my-project descripti
 	@echo "$(GREEN)✅ Updated project name and description.$(RESET)"
 
 ########################################################
+# Asset Generation
+########################################################
+
+### Asset Generation
+.PHONY: banner logo
+banner: check_bun ## Generate project banner image
+	@echo "$(YELLOW)🎨 Generating banner...$(RESET)"
+	@bun run scripts/generate-banner.ts
+	@echo "$(GREEN)✅ Banner generated at media/banner.png$(RESET)"
+
+logo: check_bun ## Generate logo, icons, and favicon
+	@echo "$(YELLOW)🎨 Generating logo suite...$(RESET)"
+	@bun run scripts/generate-logo.ts
+	@echo "$(GREEN)✅ Logo suite generated in docs/public/$(RESET)"
+
+########################################################
 # Check dependencies
 ########################################################
 
