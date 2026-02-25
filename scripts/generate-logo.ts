@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { createGeminiClient, generateImage, generateText } from "./lib/gemini-client";
 import { removeGreenscreen } from "./lib/greenscreen";
@@ -12,11 +12,16 @@ import {
 const REPO_ROOT = join(import.meta.dir, "..");
 const OUTPUT_DIR = join(REPO_ROOT, "docs", "public");
 
+function readProjectName(): string {
+    const pkg = JSON.parse(readFileSync(join(REPO_ROOT, "package.json"), "utf-8"));
+    return pkg.name;
+}
+
 const TEXT_MODEL = "gemini-2.5-flash";
 const IMAGE_MODEL = "gemini-2.5-flash-image";
 
 async function main(): Promise<void> {
-    const projectName = process.argv[2] ?? "Bun-Template";
+    const projectName = process.argv[2] ?? readProjectName();
     const theme =
         process.argv[3] ?? "incorporate modern tech aesthetics, simple and clean";
 
