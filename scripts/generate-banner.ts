@@ -7,7 +7,7 @@ const OUTPUT_DIR = join(REPO_ROOT, "media");
 const OUTPUT_PATH = join(OUTPUT_DIR, "banner.png");
 
 const TEXT_MODEL = "gemini-2.5-flash";
-const IMAGE_MODEL = "gemini-2.0-flash-preview-image-generation";
+const IMAGE_MODEL = "gemini-2.5-flash-image";
 
 const STYLE_PROMPT = `Style the image in a Japanese minimalist style, inspired by \
 traditional sumi-e ink wash painting. The artwork should feature clean, elegant \

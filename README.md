@@ -1,11 +1,11 @@
-# Bun-Template
+# bun-template
 
 <p align="center">
   <img src="media/banner.png" alt="Bun-Template" width="400">
 </p>
 
 <p align="center">
-<b>Opinionated Bun/TypeScript stack for fast development.</b>
+<b>🥟 Agent-ergonomic opinionated Bun template</b>
 </p>
 
 <p align="center">

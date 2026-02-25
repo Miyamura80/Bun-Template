@@ -13,7 +13,7 @@ const REPO_ROOT = join(import.meta.dir, "..");
 const OUTPUT_DIR = join(REPO_ROOT, "docs", "public");
 
 const TEXT_MODEL = "gemini-2.5-flash";
-const IMAGE_MODEL = "gemini-2.0-flash-preview-image-generation";
+const IMAGE_MODEL = "gemini-2.5-flash-image";
 
 async function main(): Promise<void> {
     const projectName = process.argv[2] ?? "Bun-Template";
