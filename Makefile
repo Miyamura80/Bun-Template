@@ -238,17 +238,27 @@ ruff: install_tools ## Run ruff linter
 	@uv tool run ruff check
 	@echo "$(GREEN)✅Ruff completed.$(RESET)"
 
-complexity: install_tools ## Check cyclomatic complexity
+complexity: install_tools ## Check cyclomatic complexity (Python)
 	@echo "$(YELLOW)🔍Checking cyclomatic complexity...$(RESET)"
 	@uv tool run ruff check --select C901
 	@echo "$(GREEN)✅Complexity check completed.$(RESET)"
 
-tech_debt: install_tools ## Check TODO/FIXME markers
+tech_debt: check_bun ## Check TODO/FIXME markers in TypeScript/JavaScript
+	@echo "$(YELLOW)🔍Checking tech debt markers...$(RESET)"
+	@! git grep -nEI "(TODO|FIXME|HACK|XXX)" -- '*.ts' '*.tsx' '*.js' '*.jsx' || (echo "$(RED)Tech debt markers found. Please resolve or remove them.$(RESET)" && exit 1)
+	@echo "$(GREEN)✅Tech debt check completed.$(RESET)"
+
+tech_debt_python: install_tools ## Check TODO/FIXME markers (Python)
 	@echo "$(YELLOW)🔍Checking tech debt markers...$(RESET)"
 	@uv tool run ruff check --select FIX
 	@echo "$(GREEN)✅Tech debt check completed.$(RESET)"
 
-duplicate_code: check_uv ## Detect duplicate code blocks
+duplicate_code: check_bun ## Detect duplicate code blocks
+	@echo "$(YELLOW)🔍Checking duplicate code...$(RESET)"
+	@bunx jscpd src/ --min-lines 5 --min-tokens 50 --threshold 5
+	@echo "$(GREEN)✅Duplicate code check completed.$(RESET)"
+
+duplicate_code_python: check_uv ## Detect duplicate code blocks (Python)
 	@echo "$(YELLOW)🔍Checking duplicate code...$(RESET)"
 	@uv run pylint --disable=all --enable=R0801 src common utils
 	@echo "$(GREEN)✅Duplicate code check completed.$(RESET)"
@@ -298,7 +308,7 @@ check_deps: install_tools ## Check for unused dependencies
 	@uv run deptry .
 	@echo "$(GREEN)✅Dependency check completed.$(RESET)"
 
-ci: lint deadcode typecheck lint_links ## Run all CI checks (lint, deadcode, typecheck, lint_links)
+ci: lint deadcode typecheck tech_debt duplicate_code lint_links ## Run all CI checks
 	@echo "$(GREEN)✅ CI checks completed.$(RESET)"
 
 ########################################################

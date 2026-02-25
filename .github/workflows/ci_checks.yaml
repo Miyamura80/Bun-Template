@@ -24,5 +24,9 @@ jobs:
         run: make deadcode
       - name: Run type check
         run: make typecheck
+      - name: Run tech debt check
+        run: make tech_debt
+      - name: Run duplicate code check
+        run: make duplicate_code
       - name: Run AI writing check
         run: bun run scripts/check_ai_writing.ts
