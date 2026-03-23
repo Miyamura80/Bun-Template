@@ -1,6 +1,6 @@
 import type { Config } from "./schemas";
 
-const OPENAI_O_SERIES_PATTERN = /^o(\d+)(-mini)?$/;
+const OPENAI_O_SERIES_PATTERN = /^o(\d+)(-[\w-]+)?$/;
 
 export function identifyProvider(modelName: string): string {
     const lower = modelName.toLowerCase();

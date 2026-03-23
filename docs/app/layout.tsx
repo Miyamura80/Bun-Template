@@ -2,8 +2,8 @@ import "./global.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Python Template Documentation",
-  description: "Super-opinionated Python stack for fast development",
+  title: "Bun Template Documentation",
+  description: "Super-opinionated Bun/TypeScript stack for fast development",
   icons: {
     icon: [
       {
