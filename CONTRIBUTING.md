@@ -3,8 +3,8 @@
 ## Getting Started
 
 1.  **Prerequisites**:
-    *   Python >= 3.12
-    *   `uv` (for dependency management)
+    *   Bun >= 1.0
+    *   Node.js >= 18 (for some tooling)
 
 2.  **Setup**:
     ```bash
@@ -24,12 +24,13 @@
     ```bash
     make ci
     ```
-    This runs formatting, linting, type checking, and dead code detection.
+    This runs linting, dead code detection, type checking, tech debt checks, duplicate code detection, import boundary checks, and link linting.
 
 ## Code Style
 
-*   Follow the existing conventions (snake_case for functions, CamelCase for classes).
-*   Use `ruff` for linting and formatting (handled by `make fmt` and `make ruff`).
+*   Follow the existing conventions (camelCase for functions/variables, PascalCase for classes/types, kebab-case for file names).
+*   Use Biome for linting and formatting (handled by `make fmt` and `make lint`).
+*   4-space indentation, double quotes.
 *   Add tests for new features.
 
 ## Pull Requests

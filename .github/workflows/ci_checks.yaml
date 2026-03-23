@@ -30,5 +30,7 @@ jobs:
         run: make duplicate_code
       - name: Run import boundary check
         run: make import_lint
+      - name: Run markdown link check
+        run: make lint_links
       - name: Run AI writing check
-        run: bun run scripts/check_ai_writing.ts
+        run: make check_ai_writing

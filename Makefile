@@ -203,5 +203,10 @@ agents_validate: check_bun ## Validate AGENTS.md content
 	@bun run scripts/validate-agents-md.ts
 	@echo "$(GREEN)✅AGENTS.md validation completed.$(RESET)"
 
-ci: lint deadcode typecheck tech_debt duplicate_code import_lint lint_links ## Run all CI checks
+check_ai_writing: check_bun ## Check for AI-written content
+	@echo "$(YELLOW)🔍 Checking AI writing patterns...$(RESET)"
+	@bun run scripts/check_ai_writing.ts
+	@echo "$(GREEN)✅ AI writing check completed.$(RESET)"
+
+ci: lint deadcode typecheck tech_debt duplicate_code import_lint lint_links check_ai_writing ## Run all CI checks
 	@echo "$(GREEN)✅ CI checks completed.$(RESET)"
