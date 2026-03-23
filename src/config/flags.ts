@@ -9,7 +9,6 @@ export function getFlag(
     const configVal = config.features[flagName];
     if (typeof configVal === "boolean") return configVal;
     if (typeof configVal === "number") return configVal === 1;
-    if (typeof configVal === "string")
-        return configVal === "true" || configVal === "1";
+    if (typeof configVal === "string") return configVal === "true" || configVal === "1";
     return defaultValue;
 }
