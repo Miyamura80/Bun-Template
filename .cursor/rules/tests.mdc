@@ -1,0 +1,51 @@
+---
+description: Testing approach and patterns
+globs:
+  - "tests/**/*.ts"
+  - "**/*.test.ts"
+alwaysApply: false
+---
+## Testing Strategy
+
+Write simple, focused tests using `bun:test`.
+
+### Test Structure
+
+```typescript
+import { describe, test, expect } from "bun:test";
+
+describe("FeatureName", () => {
+    test("should handle the happy path", () => {
+        const result = doSomething();
+        expect(result).toBe(expected);
+    });
+
+    test("should handle error cases", () => {
+        expect(() => doSomethingBad()).toThrow();
+    });
+});
+```
+
+### Test File Location
+
+- Tests live in `tests/` mirroring the `src/` directory structure
+- Test files use the pattern: `*.test.ts`
+- Example: `src/config/loader.ts` → `tests/config/config-loading.test.ts`
+
+### Running Tests
+
+```bash
+make test           # Run all tests
+make test_fast      # Run with 5s timeout
+make test_watch     # Watch mode
+bun test tests/specific.test.ts  # Run a single test file
+```
+
+### Best Practices
+
+- Test the happy path and error cases
+- Use descriptive test names that explain what's being tested
+- Keep tests simple and focused — one assertion per concept
+- Mock external dependencies (APIs, file system) when needed
+- Test configuration edge cases (missing env vars, invalid values)
+- No test should depend on another test's outcome

@@ -1,0 +1,45 @@
+---
+description: Documentation sync requirements for user-facing changes
+globs:
+  - "docs/**/*"
+  - "src/**/*.ts"
+  - "frontend/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# Documentation Sync Requirements
+
+When making changes to user-facing features, documentation **must** be updated in the same PR.
+
+## What Requires Documentation Updates
+
+Any changes to:
+
+- **Source code** (`/src/`) - New modules, APIs, configuration options
+- **Frontend** (`/frontend/`) - UI changes, new views, components
+- **Configuration** - New env vars, config schemas, flags
+- **New features** visible to users
+- **Removed or renamed features**
+- **Changed workflows or behavior**
+
+## Documentation Location
+
+User-facing documentation lives in `/docs/content/docs/`:
+
+- English source files: `*.mdx` (e.g., `api.mdx`, `index.mdx`)
+- Translations are auto-generated: `*.es.mdx`, `*.ja.mdx`, `*.zh.mdx`
+
+## Translation Rules
+
+**Do NOT manually translate doc files.** Edit only the English source (e.g., `api.mdx`). The Jules Translation Sync workflow will auto-translate to all locales (`es`, `ja`, `zh`).
+
+See `docs/translation-guide.md` for glossary and conventions.
+
+## Verification Steps
+
+Before completing a PR with user-facing changes:
+
+1. Search docs for references to changed components/features
+2. Verify documentation matches the new implementation
+3. Ensure navigation paths and descriptions are correct
+4. Only edit English source `.mdx` files — never the locale variants

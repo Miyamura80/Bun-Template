@@ -1,0 +1,64 @@
+---
+description: TypeScript coding style for this project
+globs:
+  - "src/**/*.ts"
+  - "tests/**/*.ts"
+  - "**/*.ts"
+  - "**/*.tsx"
+alwaysApply: false
+---
+## Stylistic Preferences
+
+- Use camelCase for functions, variables, and file names (kebab-case for file names)
+- Use PascalCase for classes, types, and interfaces
+- Use UPPER_CASE for constants
+- Use 4-space indentation
+- Use double quotes for strings
+- Enforced by Biome (see `biome.json`)
+
+## Imports
+
+**Keep imports organized and at the top of the file.**
+
+```typescript
+// Good: Clean, top-level imports
+import { describe, test, expect } from "bun:test";
+import { loadConfig } from "../src/config";
+
+// Bad: Inline/dynamic imports for non-lazy-loading purposes
+function myFunction() {
+    const { loadConfig } = await import("../src/config"); // Avoid unless truly needed for lazy loading
+}
+```
+
+## Type Annotations
+
+- Use explicit return types for public/exported functions
+- Prefer `T | null` and `T | undefined` over utility types where possible
+- Use `interface` for object shapes that may be extended, `type` for unions/intersections
+
+```typescript
+// Good
+interface ServerConfig {
+    host: string;
+    port: number;
+}
+
+type Result = Success | Failure;
+
+function getPort(config: ServerConfig): number {
+    return config.port;
+}
+
+// Bad: Missing return type on exported function
+export function getPort(config: ServerConfig) {
+    return config.port;
+}
+```
+
+## Project-Specific
+
+- Prefer simplicity over complexity
+- Use environment variables via `process.env` for secrets and runtime config
+- Use Zod schemas (in `src/config/schemas.ts`) for configuration validation
+- Keep structured data in structured format until the point of display

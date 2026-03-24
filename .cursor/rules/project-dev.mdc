@@ -1,0 +1,78 @@
+---
+description: Project development tooling, structure, and workflow
+globs:
+  - "**/*"
+alwaysApply: false
+---
+
+## Package Management
+
+This project uses `bun` as both runtime and package manager (not npm or yarn).
+
+```bash
+bun install                  # Install all dependencies
+bun add <package>            # Add a new dependency
+bun add -d <package>         # Add a dev dependency
+```
+
+## Make Commands
+
+### Development
+```bash
+make all              # Install deps and run main application
+make dev              # Run in watch mode
+make docs             # Run docs site locally
+make onboard          # Interactive onboarding CLI
+```
+
+### Testing
+```bash
+make test             # Run all tests (bun test)
+make test_fast        # Run fast tests (5s timeout)
+make test_watch       # Run tests in watch mode
+```
+
+### Code Quality
+```bash
+make fmt              # Format code with Biome (auto-fix)
+make lint             # Run Biome linter (check only)
+make deadcode         # Find dead code + unused deps with knip
+make typecheck        # TypeScript type checker (tsc --noEmit)
+make tech_debt        # Check TODO/FIXME markers
+make duplicate_code   # Detect duplicate code blocks
+make import_lint      # Enforce module boundaries (dependency-cruiser)
+make lint_links       # Check markdown links
+make ci               # Run ALL CI checks (must pass before committing)
+```
+
+## Directory Structure
+
+- `src/` - Source code (entrypoint: `src/index.ts`)
+  - `src/config/` - Configuration loading, schemas, flags, LLM API key utils
+  - `src/utils/` - Shared utilities (e.g., redact)
+- `tests/` - Test files (bun:test), mirrors src/ structure
+- `docs/` - Documentation site (Next.js/Fumadocs, separate dependency tree)
+- `frontend/` - Frontend app (Vite/React, separate dependency tree)
+- `scripts/` - Build/generation scripts (banner, logo, validation)
+
+## Configuration
+
+- Runtime config via `process.env` for secrets
+- Structured config via Zod schemas in `src/config/schemas.ts`
+- Config loading in `src/config/loader.ts`
+- Feature flags in `src/config/flags.ts`
+
+## CI Gate
+
+**Always run `make ci` before committing.** It must pass with zero errors. If `make ci` is too slow for iterative work, run at minimum:
+
+1. `make fmt` (auto-fix formatting)
+2. `make lint` (check for errors)
+3. `make typecheck` (verify types)
+
+## Git Workflow
+
+- `main` is protected — use PRs, never push directly
+- Squash and merge strategy
+- Never force push
+- See `commit_msg.mdc` for commit message conventions
