@@ -15,3 +15,21 @@ hooks = [
   { id = "duplicate-code", name = "Duplicate code check", entry = "make duplicate_code", language = "system", pass_filenames = false, always_run = true },
   { id = "tech-debt", name = "Tech debt marker check", entry = "make tech_debt", language = "system", pass_filenames = false, always_run = true },
 ]
+
+# ── Source-size guardrails (mirror GitHub Actions) ────────────────
+[[repos]]
+repo = "local"
+
+[[repos.hooks]]
+id = "check-large-files"
+name = "fail if any source file exceeds the line-count error threshold"
+language = "system"
+entry = "scripts/check_large_files.sh"
+files = "\\.(tsx|ts)$"
+
+[[repos.hooks]]
+id = "check-folder-sizes"
+name = "fail if any source folder exceeds the file-count error threshold"
+language = "system"
+entry = "scripts/check_folder_sizes.sh"
+files = "\\.(tsx|ts)$"

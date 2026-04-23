@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Overview
 
 Super-opinionated Bun/TypeScript stack for fast development. Uses `bun` as runtime and package manager.
+**Before any other work in this repo, enable prek:** `bun add -g prek && prek install`. Hooks are defined in `prek.toml`.
 
 ## Common Commands
 
@@ -92,6 +93,10 @@ After major changes, always run `make ci` and fix any issues before committing. 
 - `make fmt` (auto-fix formatting)
 - `make lint` (check for errors)
 - `make typecheck` (verify types)
+
+## Subagents
+
+- Folder-size CI failure → spawn subagent `.claude/agents/folder-refactor-advisor.md`.
 
 ## Git Workflow
 - **Protected Branch**: `main` is protected. Do not push directly to `main`. Use PRs.
