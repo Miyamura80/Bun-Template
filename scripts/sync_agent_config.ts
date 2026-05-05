@@ -272,6 +272,41 @@ function syncSkillSymlinks(): string[] {
     return changes;
 }
 
+function isRealMdFile(path: string): boolean {
+    try {
+        const st = lstatSync(path);
+        return st.isFile() && !st.isSymbolicLink();
+    } catch {
+        return false;
+    }
+}
+
+function probeLink(path: string): { exists: boolean; isSymlink: boolean } {
+    try {
+        const st = lstatSync(path);
+        return { exists: true, isSymlink: st.isSymbolicLink() };
+    } catch {
+        return { exists: false, isSymlink: false };
+    }
+}
+
+function ensureRuleSymlink(name: string, changes: string[]): void {
+    const link = join(SHARED_RULES, name);
+    const target = join("..", "..", ".claude", "rules", name);
+    const { exists, isSymlink } = probeLink(link);
+
+    if (isSymlink) {
+        if (readlinkSync(link) === target) return;
+        unlinkSync(link);
+    } else if (exists) {
+        die(
+            `ERROR: name collision - .agents/rules/${name} is a real file but .claude/rules/${name} also exists. The .claude/rules/ version is the source of truth; remove the .agents/rules/ copy.`,
+        );
+    }
+    symlinkSync(target, link);
+    changes.push(`symlinked ${rel(link)}`);
+}
+
 function syncRuleSymlinks(): string[] {
     const changes: string[] = [];
     mkdirSync(SHARED_RULES, { recursive: true });
@@ -280,38 +315,9 @@ function syncRuleSymlinks(): string[] {
     const wanted = new Set<string>();
     for (const entry of readdirSync(CLAUDE_RULES, { withFileTypes: true })) {
         if (!entry.name.endsWith(".md")) continue;
-        const fullPath = join(CLAUDE_RULES, entry.name);
-        try {
-            const st = lstatSync(fullPath);
-            if (st.isSymbolicLink() || !st.isFile()) continue;
-        } catch {
-            continue;
-        }
+        if (!isRealMdFile(join(CLAUDE_RULES, entry.name))) continue;
         wanted.add(entry.name);
-        const link = join(SHARED_RULES, entry.name);
-        const target = join("..", "..", ".claude", "rules", entry.name);
-        let linkExists = false;
-        let linkIsSymlink = false;
-        try {
-            const st = lstatSync(link);
-            linkExists = true;
-            linkIsSymlink = st.isSymbolicLink();
-        } catch {
-            // not present
-        }
-        if (linkIsSymlink) {
-            const current = readlinkSync(link);
-            if (current === target) continue;
-            unlinkSync(link);
-        } else if (linkExists) {
-            die(
-                `ERROR: name collision - .agents/rules/${entry.name} is a real file ` +
-                    `but .claude/rules/${entry.name} also exists. The .claude/rules/ version is the ` +
-                    "source of truth; remove the .agents/rules/ copy.",
-            );
-        }
-        symlinkSync(target, link);
-        changes.push(`symlinked ${rel(link)}`);
+        ensureRuleSymlink(entry.name, changes);
     }
 
     for (const entry of readdirSync(SHARED_RULES, { withFileTypes: true })) {
