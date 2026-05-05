@@ -10,7 +10,7 @@ PROJECT_ROOT=.
 .DEFAULT_GOAL := help
 
 .PHONY: sync-agent-config
-sync-agent-config: ## Sync Claude <-> Codex skills, rules, & subagents (regenerates symlinks and .codex/agents/*.toml)
+sync-agent-config: check_bun ## Sync Claude <-> Codex skills, rules, & subagents (regenerates symlinks and .codex/agents/*.toml)
 	@bun run scripts/sync_agent_config.ts
 
 ########################################################
