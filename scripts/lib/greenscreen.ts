@@ -30,10 +30,10 @@ export async function removeGreenscreen(
 
     for (let i = 0; i < width * height; i++) {
         const offset = i * channels;
-        const r = pixels[offset]!;
-        const g = pixels[offset + 1]!;
-        const b = pixels[offset + 2]!;
-        const a = pixels[offset + 3]!;
+        const r = pixels[offset] as number;
+        const g = pixels[offset + 1] as number;
+        const b = pixels[offset + 2] as number;
+        const a = pixels[offset + 3] as number;
 
         // Detect greenscreen: high green, green dominates R and B
         const isGreenscreen =
