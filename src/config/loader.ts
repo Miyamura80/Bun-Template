@@ -79,16 +79,16 @@ function applyEnvOverrides(config: Record<string, unknown>): Record<string, unkn
 
         const parts = key.split("__").map(envKeyToCamel);
         // Skip env vars whose top-level key isn't a known config field
-        if (!CONFIG_ENV_PREFIXES.has(parts[0].toLowerCase())) continue;
+        if (!CONFIG_ENV_PREFIXES.has(parts[0]!.toLowerCase())) continue;
         let target = config;
         for (let i = 0; i < parts.length - 1; i++) {
-            const part = parts[i];
+            const part = parts[i]!;
             if (typeof target[part] !== "object" || target[part] === null) {
                 target[part] = {};
             }
             target = target[part] as Record<string, unknown>;
         }
-        target[parts[parts.length - 1]] = coerceValue(rawValue);
+        target[parts[parts.length - 1]!] = coerceValue(rawValue);
     }
     return config;
 }
