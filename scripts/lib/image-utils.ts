@@ -14,9 +14,9 @@ export async function invertColors(inputBuffer: Buffer): Promise<Buffer> {
 
     for (let i = 0; i < width * height; i++) {
         const offset = i * channels;
-        pixels[offset] = 255 - pixels[offset]; // R
-        pixels[offset + 1] = 255 - pixels[offset + 1]; // G
-        pixels[offset + 2] = 255 - pixels[offset + 2]; // B
+        pixels[offset] = 255 - (pixels[offset] as number); // R
+        pixels[offset + 1] = 255 - (pixels[offset + 1] as number); // G
+        pixels[offset + 2] = 255 - (pixels[offset + 2] as number); // B
         // Alpha (offset + 3) preserved
     }
 

@@ -80,9 +80,9 @@ async function* iterTextFiles(root: string): AsyncGenerator<string> {
 function findEmDashes(text: string): Array<{ lineno: number; line: string }> {
     const results: Array<{ lineno: number; line: string }> = [];
     const lines = text.split("\n");
-    for (let i = 0; i < lines.length; i++) {
-        if (lines[i].includes(EM_DASH)) {
-            results.push({ lineno: i + 1, line: lines[i].trim() });
+    for (const [i, line] of lines.entries()) {
+        if (line.includes(EM_DASH)) {
+            results.push({ lineno: i + 1, line: line.trim() });
         }
     }
     return results;

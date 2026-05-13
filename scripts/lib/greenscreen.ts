@@ -30,9 +30,10 @@ export async function removeGreenscreen(
 
     for (let i = 0; i < width * height; i++) {
         const offset = i * channels;
-        const r = pixels[offset];
-        const g = pixels[offset + 1];
-        const b = pixels[offset + 2];
+        const r = pixels[offset] as number;
+        const g = pixels[offset + 1] as number;
+        const b = pixels[offset + 2] as number;
+        const a = pixels[offset + 3] as number;
 
         // Detect greenscreen: high green, green dominates R and B
         const isGreenscreen =
@@ -40,7 +41,7 @@ export async function removeGreenscreen(
 
         if (isGreenscreen) {
             pixels[offset + 3] = 0;
-        } else if (pixels[offset + 3] > 128) {
+        } else if (a > 128) {
             // Reduce green spill on visible non-greenscreen pixels
             const hasGreenTint = g > r + 20 && g > b + 20;
             if (hasGreenTint) {

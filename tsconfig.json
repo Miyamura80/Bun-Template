@@ -5,6 +5,10 @@
         "moduleResolution": "bundler",
         "types": ["@types/bun"],
         "strict": true,
+        "noUncheckedIndexedAccess": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitOverride": true,
         "skipLibCheck": true,
         "noEmit": true,
         "esModuleInterop": true,
@@ -12,9 +16,8 @@
         "resolveJsonModule": true,
         "isolatedModules": true,
         "verbatimModuleSyntax": true,
-        "baseUrl": ".",
         "paths": {
-            "@/*": ["src/*"]
+            "@/*": ["./src/*"]
         }
     },
     "include": ["src/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts"],
