@@ -16,6 +16,7 @@
         "resolveJsonModule": true,
         "isolatedModules": true,
         "verbatimModuleSyntax": true,
+        "erasableSyntaxOnly": true,
         "paths": {
             "@/*": ["./src/*"]
         }
