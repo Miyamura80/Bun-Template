@@ -20,25 +20,25 @@ of the file maps subcommands to those functions.
 1. Inspect the repo before changing anything:
    - `CLAUDE.md` / `AGENTS.md` (AGENTS.md is a symlink to CLAUDE.md), `README.md`,
      `package.json`, `Makefile`, `.env.example`
-   - `onboard.ts` — the orchestrator step list and each `cmd*` function, so you
+   - `onboard.ts` - the orchestrator step list and each `cmd*` function, so you
      know precisely what renaming, dependency install, env config, hook setup,
      and media generation will touch
    - `src/` (entrypoint `src/index.ts`), `tests/`, and the two independent
      dependency trees under `docs/` (Next.js/Fumadocs) and `frontend/`
-     (Vite/React) — each has its own `package.json`
-   - Systems onboarding does NOT manage (handle these manually — see step 6):
+     (Vite/React) - each has its own `package.json`
+   - Systems onboarding does NOT manage (handle these manually - see step 6):
      `docs/` and `frontend/` content/branding, and CI workflows under
      `.github/workflows/`
 
 2. Interview the user briefly before running anything. Confirm:
-   - New project name (kebab-case — `onboard.ts` validates this and derives a
+   - New project name (kebab-case - `onboard.ts` validates this and derives a
      display name from it)
    - Which onboarding steps to run: rename, dependency install, environment
      configuration, git-hook setup, media (banner/logo) generation
    - Whether the optional `docs/` site and `frontend/` app are kept or removed
    - Which `.env.example` keys they actually need (secrets vs. optional)
 
-3. Use the onboarding CLI as the source of truth — do not hand-edit
+3. Use the onboarding CLI as the source of truth - do not hand-edit
    `package.json`/`README.md` for the rename when the CLI does it:
    - Full interactive run: `make onboard` (or `bun run onboard.ts`). It walks
      every step, asking to run or skip each, and prints a summary.
@@ -48,14 +48,14 @@ of the file maps subcommands to those functions.
    - `bun run onboard.ts --help` lists the subcommands.
 
 4. What each step does (verify against `onboard.ts`, do not assume):
-   - **rename** — rewrites `name`/`description` in `package.json` and updates
+   - **rename** - rewrites `name`/`description` in `package.json` and updates
      `README.md` references to the new kebab-case name.
-   - **deps** — runs `bun install`.
-   - **env** — reads `.env.example`, groups keys, and writes selected values to
+   - **deps** - runs `bun install`.
+   - **env** - reads `.env.example`, groups keys, and writes selected values to
      `.env` (git-ignored). Keys matching secret patterns (`SECRET`, `_KEY`,
      `TOKEN`, `PASSWORD`, `CREDENTIAL`) are treated as secrets.
-   - **hooks** — installs git hooks via `prek` (`prek install`).
-   - **media** — generates banner and/or logo assets via the Gemini scripts
+   - **hooks** - installs git hooks via `prek` (`prek install`).
+   - **media** - generates banner and/or logo assets via the Gemini scripts
      (`make banner` / `make logo`); requires `GEMINI_API_KEY`. Safe to skip.
 
 5. Verify the result after onboarding:
@@ -67,11 +67,11 @@ of the file maps subcommands to those functions.
    - `prek install` registered the hooks (if the hooks step ran).
 
 6. Handle systems onboarding does not touch, after confirming with the user:
-   - `docs/` and `frontend/` branding/content if those are kept — they almost
+   - `docs/` and `frontend/` branding/content if those are kept - they almost
      always need rebranding and have their own dependency trees.
    - Removing `docs/` or `frontend/` if unused: delete the directory and prune
      any `Makefile`/`package.json` references to it, then re-run `make ci`.
-   - CI workflows under `.github/workflows/` — update or remove to match the
+   - CI workflows under `.github/workflows/` - update or remove to match the
      kept surfaces.
 
 ## Guardrails
@@ -81,7 +81,7 @@ of the file maps subcommands to those functions.
 - Do not delete `docs/`, `frontend/`, or CI configs without explicit user
   confirmation.
 - Never write real secrets into a committed file. The env step targets `.env`,
-  which is git-ignored — keep it that way.
+  which is git-ignored - keep it that way.
 - Do not push to `main`, force-push, or run destructive git commands as part of
   onboarding.
 - The media step needs network access and `GEMINI_API_KEY`; if either is
