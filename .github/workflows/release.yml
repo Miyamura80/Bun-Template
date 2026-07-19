@@ -32,6 +32,11 @@ jobs:
       - name: Build
         run: bun run build
 
+      - name: Bundle runtime config
+        # The config loader resolves global-config.yaml relative to the bundled
+        # index.js (import.meta.dir), so the YAML must ship alongside it in dist/.
+        run: cp src/config/global-config.yaml src/config/production-config.yaml dist/
+
       - name: Package build artifact
         run: tar -czf "bun-template-${GITHUB_REF_NAME}.tar.gz" -C dist .
 

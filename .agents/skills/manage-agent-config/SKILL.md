@@ -23,7 +23,7 @@ This repo is dual-tool. Before you create or edit anything under `.claude/`, `.a
 
 **Renaming or deleting?**
 
-- Rename or delete the source file (under `.agents/skills/` or `.claude/agents/`).
+- Rename or delete the source file: a shared skill under `.agents/skills/`, a Claude-only skill under `.claude/skills/`, or a subagent under `.claude/agents/`.
 - Run `make sync-agent-config` - stale symlinks and orphaned TOMLs are pruned automatically.
 
 ## Frontmatter rules for shared skills
