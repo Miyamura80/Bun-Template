@@ -98,6 +98,17 @@ After major changes, always run `make ci` and fix any issues before committing. 
 
 - Folder-size CI failure → spawn subagent `.claude/agents/folder-refactor-advisor.md`.
 
+## Skills & Codex sync
+
+This repo is dual-tool (Claude Code + Codex CLI). Shared skills live in
+`.agents/skills/<name>/SKILL.md` and are symlinked into `.claude/skills/`;
+Claude-only skills (e.g. `thermo-nuclear-code-quality-review`) stay real dirs
+under `.claude/skills/`. Subagents are authored in `.claude/agents/<name>.md`
+and `.codex/agents/<name>.toml` is generated. After any change under
+`.claude/skills`, `.claude/agents`, `.agents/skills`, or `.codex/agents`, run
+`make sync-agent-config` (prek `--check` blocks drifted commits). See the
+`manage-agent-config` skill and `.claude/rules/codex-claude-sync.md`.
+
 ## Git Workflow
 - **Protected Branch**: `main` is protected. Do not push directly to `main`. Use PRs.
 - **Merge Strategy**: Squash and merge.
