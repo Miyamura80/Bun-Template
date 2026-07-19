@@ -66,16 +66,6 @@ check_bun:
 		bun --version; \
 	fi
 
-check_jq:
-	@echo "$(YELLOW)🔍Checking jq version...$(RESET)"
-	@if ! command -v jq > /dev/null 2>&1; then \
-		echo "$(RED)jq is not installed. Please install jq before proceeding.$(RESET)"; \
-		echo "$(RED)brew install jq$(RESET)"; \
-		exit 1; \
-	else \
-		jq --version; \
-	fi
-
 ########################################################
 # Setup
 ########################################################
@@ -95,6 +85,10 @@ setup_githooks: ## Set up git hooks with prek
 .PHONY: sync-agent-config
 sync-agent-config: check_bun ## Sync Claude <-> Codex skills & subagents (regenerates symlinks and .codex/agents/*.toml)
 	@bun run scripts/sync_agent_config.ts
+
+.PHONY: sync-agent-config-check
+sync-agent-config-check: check_bun ## Fail if Claude <-> Codex sync is out of date (drift gate for CI)
+	@bun run scripts/sync_agent_config.ts --check
 
 view_deps_size: check_bun ## Show total node_modules size
 	@echo "$(YELLOW)🔍Checking node_modules size...$(RESET)"
@@ -124,15 +118,6 @@ docs: ## Run docs with bun
 	@echo "$(GREEN)📚Running docs...$(RESET)"
 	@cd docs && bun run dev
 	@echo "$(GREEN)✅ Docs run completed.$(RESET)"
-
-ralph: check_jq ## Run Ralph agent loop
-	@echo "$(RED)⚠️  WARNING: Ralph is an autonomous agent that can modify your codebase.$(RESET)"
-	@echo "$(RED)⚠️  It is HIGHLY RECOMMENDED to run Ralph in a sandboxed environment.$(RESET)"
-	@printf "$(YELLOW)Are you sure you want to continue? [y/N] $(RESET)" && read ans && [ "$$ans" = "y" ] || (echo "$(RED)Aborted.$(RESET)"; exit 1)
-	@echo "$(GREEN)🤖 Starting Ralph Agent...$(RESET)"
-	@chmod +x scripts/ralph.sh
-	@./scripts/ralph.sh $(ARGS)
-	@echo "$(GREEN)✅ Ralph Agent finished.$(RESET)"
 
 ########################################################
 # Testing
@@ -212,5 +197,5 @@ check_ai_writing: check_bun ## Check for AI-written content
 	@bun run scripts/check_ai_writing.ts
 	@echo "$(GREEN)✅ AI writing check completed.$(RESET)"
 
-ci: lint deadcode typecheck tech_debt duplicate_code import_lint lint_links check_ai_writing ## Run all CI checks
+ci: lint deadcode typecheck tech_debt duplicate_code import_lint lint_links check_ai_writing sync-agent-config-check ## Run all CI checks
 	@echo "$(GREEN)✅ CI checks completed.$(RESET)"

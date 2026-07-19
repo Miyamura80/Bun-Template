@@ -6,7 +6,7 @@ paths:
   - ".codex/agents/**"
 ---
 
-# Codex ↔ Claude skill & subagent sync
+# Codex <-> Claude skill & subagent sync
 
 This repo is dual-tool: both Claude Code and Codex CLI are expected to work. Skills and subagents are shared where possible. Read this before creating, editing, or moving any skill or subagent in this repo.
 
@@ -27,8 +27,8 @@ Codex auto-scans `.agents/skills/` walking up from cwd to repo root. Claude auto
 Every `SKILL.md` under `.agents/skills/` MUST be readable by both tools. The overlap is narrow - stick to it:
 
 **Always safe (both tools):**
-- `name` - required, lowercase-hyphens, ≤64 chars
-- `description` - required, ≤250 chars, written for implicit matching
+- `name` - required, lowercase-hyphens, <=64 chars
+- `description` - required, <=250 chars, written for implicit matching
 - Plain markdown body
 
 **Claude-only - DO NOT use in shared skills:**
@@ -41,7 +41,7 @@ Every `SKILL.md` under `.agents/skills/` MUST be readable by both tools. The ove
 **Codex-only - OK to include (Claude ignores unknown keys):**
 - Sibling `agents/openai.yaml` for Codex UI metadata, invocation policy, tool dependencies
 
-If a skill genuinely needs Claude-only features, keep it at `.claude/skills/<name>/` as a real directory (no symlink) and do not mirror it to `.agents/skills/`. Note this with a `<!-- claude-only -->` comment at the top of the body.
+If a skill genuinely needs Claude-only features, keep it at `.claude/skills/<name>/` as a real directory (no symlink) and do not mirror it to `.agents/skills/`. Note this with a `<!-- claude-only -->` comment at the top of the body. In this repo, `thermo-nuclear-code-quality-review` is such a Claude-only skill (it sets `disable-model-invocation` / `user-invocable`).
 
 ## Subagents: convert, don't symlink
 
@@ -52,26 +52,29 @@ The formats are structurally different:
 Rules:
 - `.claude/agents/*.md` is the **source of truth**. Never hand-edit `.codex/agents/*.toml`.
 - Run `make sync-agent-config` after editing a subagent. The pre-commit hook will refuse the commit if the generated TOML is out of date.
-- Claude-only frontmatter keys (`tools`, `model`) don't translate - document tool expectations in the prose body instead so both sides pick them up.
+- Claude-only frontmatter keys (`tools`, `model`, `color`) don't translate - they are preserved as TOML comments for reference. Document tool expectations in the prose body so both sides pick them up.
 - Inside the body, avoid literal `"""` sequences (they'd close the TOML string); the converter escapes them but it's easier to just not use them.
+
+## CLAUDE.md <-> AGENTS.md
+
+Claude reads `CLAUDE.md`; Codex reads `AGENTS.md`. To keep them identical, `CLAUDE.md` is the **source of truth** and `AGENTS.md` is a symlink pointing at the sibling `CLAUDE.md` (already set up at the repo root). Edit `CLAUDE.md`, never `AGENTS.md`. The `make agents_validate` check enforces that the file has the required sections. The sync script does not manage this symlink; it is a static part of the repo layout.
 
 ## Do not try to sync these
 
 - `.claude/rules/*.md` vs `.codex/rules/*.rules` - different languages (prose vs permission DSL). Maintain separately.
 - `.claude/commands/*.md` - Claude-only; Codex has no slash-command runtime.
-- `CLAUDE.md` (read by Claude) and `AGENTS.md` (read by Codex) - do NOT keep two copies. `CLAUDE.md` is the single source of truth and `AGENTS.md` is a committed symlink pointing at it, so both tools read the same file. Edit `CLAUDE.md`; never replace the `AGENTS.md` symlink with a diverging second document.
 
 ## Tooling
 
-- `make sync-agent-config` - idempotent. Creates missing `.claude/skills/` symlinks for every shared skill under `.agents/skills/`, regenerates `.codex/agents/*.toml` from `.claude/agents/*.md`, auto-prunes dangling symlinks and orphan TOMLs silently.
-- Pre-commit: [`prek`](https://prek.j178.dev/installation/), configured in `prek.toml` at repo root. Register once per clone with `prek install`. The `sync-agent-config` hook runs `bun run scripts/sync_agent_config.ts --check`, which reports (without writing) any drift and fails the commit if the generated symlinks or TOMLs are out of date - regenerate with `make sync-agent-config`, stage the result, and commit again.
-- TypeScript script runs via `bun run scripts/sync_agent_config.ts`; deps (`yaml`) are in `package.json`.
+- `make sync-agent-config` - idempotent. Creates missing `.claude/skills/` symlinks for every shared skill under `.agents/skills/`, regenerates `.codex/agents/*.toml` from `.claude/agents/*.md`, auto-prunes dangling symlinks and orphan TOMLs silently. Validates shared skills for Claude-only frontmatter/body features and fails loudly if any leak in.
+- Pre-commit: [`prek`](https://prek.j178.dev/installation/), configured in `prek.toml` at repo root. Register once per clone with `prek install`. Runs `bun run scripts/sync_agent_config.ts --check` and fails the commit if it produced drift.
+- The TypeScript script runs via `bun run scripts/sync_agent_config.ts`; its only dependency (`yaml`) is already in `package.json`.
 
 ## When adding a new skill or subagent
 
 The `manage-agent-config` skill (at `.agents/skills/manage-agent-config/`) has the full decision tree and is invoked automatically when an agent touches any of these directories. The short version:
 
-1. Shared skill (works in both tools) → `.agents/skills/<name>/SKILL.md`. Run `make sync-agent-config`.
-2. Claude-only skill (uses `$ARGUMENTS`, `allowed-tools`, etc.) → `.claude/skills/<name>/SKILL.md` as a real directory. No symlink.
-3. Subagent → edit `.claude/agents/<name>.md`. Never hand-edit `.codex/agents/*.toml`. Run `make sync-agent-config`. Commit both files.
-4. Delete or rename → edit/remove the source, then `make sync-agent-config` cleans up the mirror.
+1. Shared skill (works in both tools) -> `.agents/skills/<name>/SKILL.md`. Run `make sync-agent-config`.
+2. Claude-only skill (uses `$ARGUMENTS`, `allowed-tools`, `disable-model-invocation`, etc.) -> `.claude/skills/<name>/SKILL.md` as a real directory. No symlink.
+3. Subagent -> edit `.claude/agents/<name>.md`. Never hand-edit `.codex/agents/*.toml`. Run `make sync-agent-config`. Commit both files.
+4. Delete or rename -> edit/remove the source, then `make sync-agent-config` cleans up the mirror.
