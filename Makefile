@@ -86,6 +86,10 @@ setup_githooks: ## Set up git hooks with prek
 sync-agent-config: check_bun ## Sync Claude <-> Codex skills & subagents (regenerates symlinks and .codex/agents/*.toml)
 	@bun run scripts/sync_agent_config.ts
 
+.PHONY: sync-agent-config-check
+sync-agent-config-check: check_bun ## Fail if Claude <-> Codex sync is out of date (drift gate for CI)
+	@bun run scripts/sync_agent_config.ts --check
+
 view_deps_size: check_bun ## Show total node_modules size
 	@echo "$(YELLOW)🔍Checking node_modules size...$(RESET)"
 	@du -sh node_modules
@@ -193,5 +197,5 @@ check_ai_writing: check_bun ## Check for AI-written content
 	@bun run scripts/check_ai_writing.ts
 	@echo "$(GREEN)✅ AI writing check completed.$(RESET)"
 
-ci: lint deadcode typecheck tech_debt duplicate_code import_lint lint_links check_ai_writing ## Run all CI checks
+ci: lint deadcode typecheck tech_debt duplicate_code import_lint lint_links check_ai_writing sync-agent-config-check ## Run all CI checks
 	@echo "$(GREEN)✅ CI checks completed.$(RESET)"

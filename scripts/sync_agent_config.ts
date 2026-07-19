@@ -52,6 +52,28 @@ const SHARED_SKILL_FORBIDDEN_KEYS = new Set([
     "argument-hint",
 ]);
 
+// The documented shared-skill frontmatter contract: only these two keys are
+// allowed. Anything else (Claude-only or simply unrecognized) is rejected.
+const SHARED_SKILL_ALLOWED_KEYS = new Set(["name", "description"]);
+const SKILL_NAME_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const SKILL_NAME_MAX = 64;
+const SKILL_DESCRIPTION_MAX = 250;
+
+// TOML forbids all control chars except tab (U+0009) in basic strings and, for
+// multiline basic strings, tab plus the newline chars (U+000A / U+000D). This
+// regex matches every other control char (U+0000-U+001F and U+007F) that must
+// be encoded as \uHHHH; \t, \n, and \r are excluded so their dedicated escapes
+// (or literal newlines in multiline strings) survive.
+// biome-ignore lint/suspicious/noControlCharactersInRegex: intentionally matches TOML-forbidden control chars so they can be escaped
+const TOML_FORBIDDEN_CONTROL_RE = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g;
+
+function escapeTomlControlChars(s: string): string {
+    return s.replace(
+        TOML_FORBIDDEN_CONTROL_RE,
+        (c) => `\\u${c.charCodeAt(0).toString(16).toUpperCase().padStart(4, "0")}`,
+    );
+}
+
 const SHARED_SKILL_FORBIDDEN_BODY_PATTERNS: [RegExp, string][] = [
     [/\$ARGUMENTS\b/, "$ARGUMENTS substitution"],
     [/\$[1-9][0-9]*\b/, "positional arg substitution ($1, $2, ...)"],
@@ -73,6 +95,23 @@ function die(msg: string): never {
     process.exit(1);
 }
 
+// Guard against a committed symlink at a generated-TOML path redirecting our
+// read/write outside the repo. `lstatSync` does not follow the link, so we can
+// detect it and refuse rather than clobbering whatever it points at.
+function assertRegularFileOrAbsent(path: string): void {
+    let st: ReturnType<typeof lstatSync>;
+    try {
+        st = lstatSync(path);
+    } catch {
+        return; // absent -- a fresh regular file will be created
+    }
+    if (st.isSymbolicLink()) {
+        die(
+            `ERROR: ${rel(path)} is a symlink; refusing to follow it. Generated Codex TOML must be a regular file. Remove the symlink and re-run.`,
+        );
+    }
+}
+
 function parseMd(path: string): { meta: Frontmatter; body: string } {
     const text = readFileSync(path, "utf-8");
     const m = text.match(FRONTMATTER_RE);
@@ -83,22 +122,30 @@ function parseMd(path: string): { meta: Frontmatter; body: string } {
 }
 
 function tomlBasicString(s: string): string {
-    // Only used for `name` and `description`. Frontmatter rules already forbid
-    // control chars and newlines in these, so plain escape of backslash, quote,
-    // tab, and the newline pair is sufficient.
-    const escaped = s
-        .replace(/\\/g, "\\\\")
-        .replace(/"/g, '\\"')
-        .replace(/\t/g, "\\t")
-        .replace(/\r/g, "\\r")
-        .replace(/\n/g, "\\n");
+    // Only used for `name` and `description`. Escape backslash, quote, and the
+    // whitespace escapes, then encode every remaining TOML-forbidden control
+    // char (U+0000-U+001F except \t/\n/\r, plus U+007F) as \uHHHH so a stray
+    // control char can never produce invalid TOML.
+    const escaped = escapeTomlControlChars(
+        s
+            .replace(/\\/g, "\\\\")
+            .replace(/"/g, '\\"')
+            .replace(/\t/g, "\\t")
+            .replace(/\r/g, "\\r")
+            .replace(/\n/g, "\\n"),
+    );
     return `"${escaped}"`;
 }
 
 function tomlMultilineString(s: string): string {
     // Triple-quoted; escape sequences of 3+ double quotes so the string can't
-    // close prematurely. A literal `"""` becomes `""\"`.
-    const escaped = s.replace(/\\/g, "\\\\").replace(/"""/g, '""\\"');
+    // close prematurely. A literal `"""` becomes `""\"`. Tab and newlines are
+    // legal in a multiline basic string, but other control chars (e.g.
+    // form-feed U+000C, vertical-tab U+000B) are not, so encode them as \uHHHH.
+    const escaped = escapeTomlControlChars(s.replace(/\\/g, "\\\\")).replace(
+        /"""/g,
+        '""\\"',
+    );
     // Leading newline right after the opening """ is stripped by TOML, so add one
     // so the content starts on its own line for readability.
     return `"""\n${escaped}"""`;
@@ -165,6 +212,80 @@ function stripCode(text: string): string {
     return out.join("");
 }
 
+// Frontmatter allowlist: only `name` and `description` are permitted. Report
+// Claude-only keys with a targeted message, then reject any other key not on the
+// allowlist -- don't rely on the forbidden-key list alone.
+function validateSkillKeys(label: string, meta: Frontmatter): string[] {
+    const errs: string[] = [];
+    const keys = Object.keys(meta);
+    const claudeOnly = keys.filter((k) => SHARED_SKILL_FORBIDDEN_KEYS.has(k)).sort();
+    if (claudeOnly.length > 0) {
+        errs.push(
+            `${label}: Claude-only frontmatter keys in shared skill: [${claudeOnly.map((k) => `'${k}'`).join(", ")}]`,
+        );
+    }
+    const unknown = keys
+        .filter(
+            (k) =>
+                !SHARED_SKILL_ALLOWED_KEYS.has(k) &&
+                !SHARED_SKILL_FORBIDDEN_KEYS.has(k),
+        )
+        .sort();
+    if (unknown.length > 0) {
+        errs.push(
+            `${label}: unexpected frontmatter keys in shared skill (only 'name' and 'description' allowed): [${unknown.map((k) => `'${k}'`).join(", ")}]`,
+        );
+    }
+    return errs;
+}
+
+function validateSkillBody(label: string, body: string): string[] {
+    const errs: string[] = [];
+    for (const [pat, patLabel] of SHARED_SKILL_RAW_BODY_PATTERNS) {
+        if (pat.test(body))
+            errs.push(`${label}: body uses Claude-only feature: ${patLabel}`);
+    }
+    const scan = stripCode(body);
+    for (const [pat, patLabel] of SHARED_SKILL_FORBIDDEN_BODY_PATTERNS) {
+        if (pat.test(scan))
+            errs.push(`${label}: body uses Claude-only feature: ${patLabel}`);
+    }
+    return errs;
+}
+
+// `name`: required lowercase-hyphen slug, <=64 chars.
+function validateSkillName(label: string, name: unknown): string[] {
+    if (name === undefined || name === null || name === "") {
+        return [`${label}: missing \`name\` in frontmatter`];
+    }
+    if (typeof name !== "string") return [`${label}: \`name\` must be a string`];
+    if (!SKILL_NAME_RE.test(name)) {
+        return [`${label}: \`name\` must be a lowercase-hyphen slug (got '${name}')`];
+    }
+    if (name.length > SKILL_NAME_MAX) {
+        return [
+            `${label}: \`name\` must be <=${SKILL_NAME_MAX} chars (got ${name.length})`,
+        ];
+    }
+    return [];
+}
+
+// `description`: required string, <=250 chars.
+function validateSkillDescription(label: string, description: unknown): string[] {
+    if (description === undefined || description === null || description === "") {
+        return [`${label}: missing \`description\` in frontmatter`];
+    }
+    if (typeof description !== "string") {
+        return [`${label}: \`description\` must be a string`];
+    }
+    if (description.length > SKILL_DESCRIPTION_MAX) {
+        return [
+            `${label}: \`description\` must be <=${SKILL_DESCRIPTION_MAX} chars (got ${description.length})`,
+        ];
+    }
+    return [];
+}
+
 function validateSharedSkill(skillDir: string): string[] {
     const skillMd = join(skillDir, "SKILL.md");
     if (!existsSync(skillMd)) {
@@ -177,28 +298,13 @@ function validateSharedSkill(skillDir: string): string[] {
         return [String(e)];
     }
     const { meta, body } = parsed;
-    const errs: string[] = [];
-    const badKeys = Object.keys(meta)
-        .filter((k) => SHARED_SKILL_FORBIDDEN_KEYS.has(k))
-        .sort();
-    if (badKeys.length > 0) {
-        errs.push(
-            `${rel(skillMd)}: Claude-only frontmatter keys in shared skill: [${badKeys.map((k) => `'${k}'`).join(", ")}]`,
-        );
-    }
-    for (const [pat, label] of SHARED_SKILL_RAW_BODY_PATTERNS) {
-        if (pat.test(body))
-            errs.push(`${rel(skillMd)}: body uses Claude-only feature: ${label}`);
-    }
-    const scan = stripCode(body);
-    for (const [pat, label] of SHARED_SKILL_FORBIDDEN_BODY_PATTERNS) {
-        if (pat.test(scan))
-            errs.push(`${rel(skillMd)}: body uses Claude-only feature: ${label}`);
-    }
-    if (!meta.name) errs.push(`${rel(skillMd)}: missing \`name\` in frontmatter`);
-    if (!meta.description)
-        errs.push(`${rel(skillMd)}: missing \`description\` in frontmatter`);
-    return errs;
+    const label = rel(skillMd);
+    return [
+        ...validateSkillKeys(label, meta),
+        ...validateSkillBody(label, body),
+        ...validateSkillName(label, meta.name),
+        ...validateSkillDescription(label, meta.description),
+    ];
 }
 
 function validateAllSharedSkills(names: string[]): void {
@@ -282,6 +388,7 @@ function syncAgents(): string[] {
         const { meta, body } = parseMd(mdPath);
         const tomlName = `${mdName.slice(0, -3)}.toml`;
         const tomlPath = join(CODEX_AGENTS, tomlName);
+        assertRegularFileOrAbsent(tomlPath);
         const fresh = renderToml(meta, body, rel(mdPath));
         const current = existsSync(tomlPath) ? readFileSync(tomlPath, "utf-8") : null;
         if (current !== fresh) {
