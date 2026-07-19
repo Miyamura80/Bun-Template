@@ -22,7 +22,8 @@ gif/
 !.env.example
 
 # Bun
-bun.lock
+# Note: bun.lock is committed (like frontend/ and docs/) so that
+# `bun install --frozen-lockfile` works reproducibly in CI/release.
 
 # TypeScript
 *.tsbuildinfo
